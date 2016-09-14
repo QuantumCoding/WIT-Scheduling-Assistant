@@ -77,7 +77,7 @@ public class Period {
 	}
 
 	public static enum WeekDay {
-		Monday('M'), Tuesday('T'), Wednesday('W'), Thursday('R'), Friday('F');
+		Monday('M'), Tuesday('T'), Wednesday('W'), Thursday('R'), Friday('F'), Saturday('S');
 		
 		private char id; WeekDay(char id) { this.id = id; }
 		public char id() { return id; }

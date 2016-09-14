@@ -11,8 +11,10 @@ import pages.LoginPage;
 import pages.LookupResultsPage;
 import pages.LookupResultsPage.LookupResult;
 import pages.Page;
+import pages.SchedulePage;
 import pages.SubjectPage;
 import pages.TermPage;
+import scheduling.Schedule;
 import scheduling.Section;
 import user_interface.Display;
 import util.Choise;
@@ -24,6 +26,9 @@ public class PageLock {
 	private TermPage termPage;
 //	private RegisterPage registerPage;
 	private SubjectPage subjectPage;
+	private SchedulePage schedulePage;
+	
+	private volatile boolean requestSchedule;
 	
 	private volatile boolean login;
 	private volatile String loginUsername, loginPassword;
@@ -91,7 +96,6 @@ public class PageLock {
 			
 			if(changeTerm) {
 				termPage.changeTerm(newTerm);
-				subjectPage = new SubjectPage();
 //				registerPage = new RegisterPage();
 				changeTerm = false;
 			}
@@ -110,6 +114,11 @@ public class PageLock {
 				}
 				
 				collectSections = true;
+			}
+			
+			if(requestSchedule) {
+				schedulePage = new SchedulePage();
+				requestSchedule = false;
 			}
 			
 //			if(register) {
@@ -203,6 +212,19 @@ public class PageLock {
 		}
 		
 		return options;
+	}
+	
+	public Schedule getSchedule() { 
+		waitForOpening();
+		
+		requestSchedule = true;
+		
+		synchronized(sycn) {
+			try { sycn.wait(); } 
+			catch(InterruptedException e) { return null; }
+		}
+		
+		return schedulePage.getSchedule(); 
 	}
 	
 //	public SchedulingException[] register(int... registerClasses) {

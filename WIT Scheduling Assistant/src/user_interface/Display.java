@@ -28,6 +28,7 @@ public class Display extends JFrame {
 	
 	private JPanel contentPane;
 	private LoginScreen loginScreen;
+	private MainMenuScreen menuScreen;
 	private LoadingScreen loadingScreen;
 	private AddClassScreen addClassScreen;
 	private ScheduleDisplayScreen displayScreen;
@@ -50,6 +51,7 @@ public class Display extends JFrame {
 		}
 		
 		loginScreen = new LoginScreen(pages, this);
+		menuScreen = new MainMenuScreen(pages, this);
 		loadingScreen = new LoadingScreen();
 		
 		setTitle("WIT Scheduling Assistant");
@@ -58,7 +60,8 @@ public class Display extends JFrame {
 		contentPane = new JPanel();
 		setContentPane(contentPane);
 		contentPane.setLayout(new CardLayout());
-		
+
+		contentPane.add(menuScreen, "menuScreen");
 		contentPane.add(loginScreen, "loginScreen");
 		contentPane.add(loadingScreen, "loadingScreen");
 		
@@ -71,6 +74,19 @@ public class Display extends JFrame {
 	
 	public void switchToClassAdder() {
 		((CardLayout) contentPane.getLayout()).show(contentPane, "addClassScreen");
+	}
+	
+	public void switchToMainMenu() {
+		((CardLayout) contentPane.getLayout()).show(contentPane, "menuScreen");
+	}
+	
+	public void showSchedules(ArrayList<Schedule> schedules) {
+		if(displayScreen == null) {
+			displayScreen = new ScheduleDisplayScreen(this, schedules);
+			contentPane.add(displayScreen, "displayScreen");
+		} else displayScreen.setSchedules(schedules);
+		
+		((CardLayout) contentPane.getLayout()).show(contentPane, "displayScreen");
 	}
 	
 	public void showLoading(String message) {
@@ -90,7 +106,7 @@ public class Display extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		
-		((CardLayout) contentPane.getLayout()).show(contentPane, "addClassScreen");
+		switchToMainMenu();
 	}
 	
 	public void submitClasses(ArrayList<LookupResult> classes) {
@@ -188,7 +204,7 @@ public class Display extends JFrame {
 			System.out.println("Done");
 			
 			if(!error) {
-				displayScreen = new ScheduleDisplayScreen(scheduler.getSchedules());
+				displayScreen = new ScheduleDisplayScreen(Display.this, scheduler.getSchedules());
 				contentPane.add(displayScreen, "displayScreen");
 	
 				((CardLayout) contentPane.getLayout()).show(contentPane, "displayScreen");

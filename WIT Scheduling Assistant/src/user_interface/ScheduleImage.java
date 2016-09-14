@@ -11,7 +11,11 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.JFileChooser;
 
 import scheduling.ClassConfig;
 import scheduling.Designation;
@@ -21,6 +25,8 @@ import scheduling.Schedule;
 import scheduling.Section;
 
 public class ScheduleImage extends BufferedImage {
+	private static JFileChooser fileChooser;
+	
 	private static final int RESOLUTION_X = 1024;
 	private static final int RESOLUTION_Y = 2048;
 
@@ -57,6 +63,8 @@ public class ScheduleImage extends BufferedImage {
 	
 	public static BufferedImage weekHeader, timeLabels;
 	static {
+		fileChooser = new JFileChooser();
+		
 		createWeekHeader();
 		createTimeLabels();
 	}
@@ -229,13 +237,15 @@ public class ScheduleImage extends BufferedImage {
 	
 		int loop = 0;
 		index = 0; int startHeight = 0;
-		String[] parts = separate(g, info.getInstructor(), width, new Font("Tahoma", Font.BOLD, 20), 1, true);
+		String[] parts = separate(g, info.getInstructor(), width, 
+				new Font("Tahoma", Font.BOLD, b.getMaxY() - yShift > 1/2f * height ? 16 : 20), 1, true);
+		
 		for(String part : parts) {
 			loop ++;
 			
 			if(loop == 1) { 
 				g.setFont(new Font("Tahoma", Font.BOLD, Integer.parseInt(part))); 
-				startHeight = (height - 0 - g.getFont().getSize() * (parts.length - 1)) + yShift;
+				startHeight = (height - g.getFont().getSize() * (parts.length - 1)) + yShift;
 				
 				if(startHeight <= b.getMaxY())
 					return;
@@ -346,5 +356,28 @@ public class ScheduleImage extends BufferedImage {
 		g.setStroke(startStroke);
 		
 		return letter.getBounds2D();
+	}
+	
+	public void save() {
+		int result = fileChooser.showSaveDialog(null);
+		if(result == JFileChooser.CANCEL_OPTION)
+			return;
+		
+		try {
+			BufferedImage image = new BufferedImage(
+					getWidth() + timeLabels.getWidth(), 
+					getHeight() + weekHeader.getHeight(), 
+				TYPE_INT_ARGB);
+			
+			Graphics2D g = image.createGraphics();
+			g.drawImage(weekHeader, LABELS_LENGTH, 0, null);
+			g.drawImage(timeLabels, 0, HEADER_HEIGHT, null);
+			g.drawImage(this, LABELS_LENGTH, HEADER_HEIGHT, null);
+			g.dispose();
+			
+			ImageIO.write(image, "png", fileChooser.getSelectedFile());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

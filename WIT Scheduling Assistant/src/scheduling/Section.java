@@ -1,15 +1,19 @@
 package scheduling;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 
+import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
 import pages.LookupResultsPage.LookupResult;
 
 public class Section {
+	private static final boolean DEBUG_ALLOW_NON_REG_CLASS = true;
+	
 	private LookupResult subject;
 	private String className;
 	private String classId;
@@ -50,6 +54,11 @@ public class Section {
 		}
 
 		isOpen = elements.get(0).getChildElementCount() > 1;
+		if(!isOpen && DEBUG_ALLOW_NON_REG_CLASS) {
+			Iterator<DomElement> iter = elements.get(0).getChildElements().iterator();
+			if(iter.hasNext())
+				isOpen = iter.next().getTextContent().equalsIgnoreCase("NR");
+		}
 		
 		classId = elements.get(3).getTextContent();
 		sectionId = elements.get(4).getTextContent();
@@ -101,6 +110,29 @@ public class Section {
 		}
 	}
 
+	private Section() {}
+	
+	public static Section parse(LookupResult subject, String className, String classId, int courseNumber, String sectionId,
+			double credits, ArrayList<Designation> designations, String instructor, boolean isLab, ArrayList<Section> labs) {
+		Section section = new Section();
+
+		section.subject = subject;
+		section.className = className;
+		section.classId = classId;
+		section.courseNumber = courseNumber;
+		section.sectionId = sectionId;
+		section.credits = credits;
+		section.designations = designations;
+		section.instructor = instructor;
+		section.isLab = isLab;
+		section.hasLab = labs != null;
+		section.isOpen = true;
+		section.isViable = true;
+		section.labs = labs;
+		
+		return section;
+	}
+	
 	public String toString() {
 		return "Section [\n\tsubject=" + subject + "\n\t className=" + className + "\n\t classId=" + classId + "\n\t courseNumber="
 				+ courseNumber + "\n\t sectionId=" + sectionId + "\n\t credits=" + credits

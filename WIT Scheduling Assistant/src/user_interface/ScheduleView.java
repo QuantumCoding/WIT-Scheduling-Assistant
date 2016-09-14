@@ -16,7 +16,7 @@ public class ScheduleView extends JScrollPane {
 	private JPanel scheduleDisplay;
 	
 	public ScheduleView(Schedule schedule) {
-		getVerticalScrollBar().setUnitIncrement(32);
+		getVerticalScrollBar().setUnitIncrement(ScheduleImage.RESOLUTION_YP / 72);
 		
 		scheduleDisplay = new JPanel() {
 			private static final long serialVersionUID = 4796041366087900724L;
@@ -67,4 +67,8 @@ public class ScheduleView extends JScrollPane {
 		scheduleImage.render(variant);
 		scheduleDisplay.repaint();
  	}
+	
+	public void saveImage() {
+		scheduleImage.save();
+	}
 }

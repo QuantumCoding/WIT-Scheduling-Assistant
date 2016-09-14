@@ -25,6 +25,25 @@ public class Schedule {
 		this.sections = sections;
 	}
 	
+	public Schedule(ArrayList<Section> sections) {
+		this.sections = sections;
+		this.isValid = true;
+		this.levelSizes = new ArrayList<>();
+		levelSizes.add(1);
+
+		variants = new HashMap<>();
+		ArrayList<ClassConfig> configs = new ArrayList<>();
+		for(Section section : sections)
+			configs.add(new ClassConfig(section, section.hasLab() ? 0 : -1));
+		variants.put(0, configs);
+		
+		colorMap = new HashMap<>();
+		float colorIncrement = .9f / sections.size();
+		for(int i = 0; i < sections.size(); i ++) {
+			colorMap.put(sections.get(i).getSubject(), Color.getHSBColor(i * colorIncrement, 1, 1));
+		}
+	}
+	
 	public boolean isValid() {
 		if(creator == null) return isValid;
 

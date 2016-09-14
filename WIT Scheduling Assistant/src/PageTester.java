@@ -4,6 +4,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 
 import pages.LoginPage;
 import pages.Page;
+import pages.SchedulePage;
 import pages.TermPage;
 import web_interface.WebClientCreater;
 
@@ -14,6 +15,8 @@ public class PageTester {
 			
 			LoginPage loginPage = new LoginPage();
 			loginPage.login("cilfonej", "#Cbmuku35");
+			
+			new SchedulePage();
 			/*TermPage termPage = */new TermPage();
 //			System.out.println(termPage.changeTerm(termPage.getTerms().get(0)).getTitleText());
 

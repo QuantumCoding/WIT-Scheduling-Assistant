@@ -39,13 +39,21 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	private JButton nextButton;
 	private JLabel currentScheduleLabel;
 	
+	private JButton saveImageButton;
+	private JButton menuButton;
+
+	private JLabel variantLabel;
 	private JComboBox<Integer> variantComboBox;
 	private DefaultComboBoxModel<Integer> variantComboBoxModel;
 	
 	private JButton registerButton;
 	private ScheduleView scheduleDisplayScrollPane;
 	
-	public ScheduleDisplayScreen(ArrayList<Schedule> schedules) {
+	private Display display;
+	private boolean updating;
+	
+	public ScheduleDisplayScreen(Display display, ArrayList<Schedule> schedules) {
+		this.display = display;
 		this.schedules = new ArrayList<>(schedules);
 		Collections.shuffle(this.schedules);
 		
@@ -55,12 +63,17 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		JPanel topPanel = new JPanel();
 		topPanel.setBackground(Color.WHITE);
 		add(topPanel, "cell 0 0 1 2,grow");
-		topPanel.setLayout(new MigLayout("", "[grow][20%,right]", "[grow]"));
+		topPanel.setLayout(new MigLayout("", "[grow][][20%,right]", "[grow]"));
+		
+		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
+		menuButton.setFont(new Font("Tahoma", Font.BOLD, 14));
+		menuButton.setBackground(Color.WHITE);
+		topPanel.add(menuButton, "cell 1 0,growy");
 		
 		JPanel scheduleControlPanel = new JPanel();
 		scheduleControlPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		scheduleControlPanel.setBackground(Color.WHITE);
-		topPanel.add(scheduleControlPanel, "flowx,cell 1 0,growx,aligny center");
+		topPanel.add(scheduleControlPanel, "flowx,cell 2 0,growx,aligny center");
 		scheduleControlPanel.setLayout(new MigLayout("", "[grow][grow]", "[grow][][]"));
 		
 		JLabel witHeaderLabel = new JLabel("Possible Schedules");
@@ -97,27 +110,39 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		optionsPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
 		optionsPanel.setBackground(Color.WHITE);
 		add(optionsPanel, "cell 0 3,grow");
-		optionsPanel.setLayout(new MigLayout("", "[][grow][50px]", "[]"));
+		optionsPanel.setLayout(new MigLayout("", "[][grow][grow][50px]", "[]"));
 		
 		registerButton = new JButton("Register Schedule");
+		registerButton.setBackground(Color.WHITE);
 		registerButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		optionsPanel.add(registerButton, "cell 0 0,alignx left");
 		registerButton.addActionListener(this);
 		
-		JLabel variantLabel = new JLabel("Variant:");
+		saveImageButton = new JButton("Save Image");
+		saveImageButton.setBackground(Color.WHITE);
+		saveImageButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		optionsPanel.add(saveImageButton, "cell 1 0,alignx right");
+		saveImageButton.addActionListener(this);
+		
+		variantLabel = new JLabel("Variant:");
 		variantLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		optionsPanel.add(variantLabel, "cell 1 0,alignx right");
+		optionsPanel.add(variantLabel, "cell 2 0,alignx right");
 		
 		variantComboBox = new JComboBox<>();
 		variantComboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		variantComboBox.setModel(variantComboBoxModel = new DefaultComboBoxModel<>());
-		optionsPanel.add(variantComboBox, "cell 2 0,growx");
+		optionsPanel.add(variantComboBox, "cell 3 0,growx");
 		variantComboBox.addActionListener(this);
+		
+		menuButton.addActionListener(this);
 		
 		updateLabel();
 	}
 	
-	private boolean updating;
+	public void setSchedules(ArrayList<Schedule> schedules) {
+		this.schedules = schedules; updateLabel();
+	}
+	
 	private void updateLabel() {
 		if(updating) return;
 		
@@ -130,6 +155,9 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		variantComboBoxModel.removeAllElements();
 		for(int i = 0; i < schedules.get(selectedIndex).getVariantCount(); i ++)
 			variantComboBoxModel.addElement(i);
+		
+		variantComboBox.setVisible(variantComboBoxModel.getSize() > 1);
+		variantLabel.setVisible(variantComboBox.isVisible());
 		
 		scheduleDisplayScrollPane.changeSchedule(schedules.get(selectedIndex));
 		
@@ -167,11 +195,21 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			return;
 		}
 		
+		if(e.getSource() == saveImageButton) {
+			scheduleDisplayScrollPane.saveImage();
+			return;
+		}
+		
+		if(e.getSource() == menuButton) {
+			display.switchToMainMenu();
+			return;
+		}
+		
 		if(e.getSource() == registerButton) {
 			JPanel diplayPanel = new JPanel();
 			diplayPanel.setLayout(new BoxLayout(diplayPanel, BoxLayout.Y_AXIS));
 			
-			JLabel webLink = new JLabel("<HTML><U>Link to Resistration Page</U></HTML>");
+			JLabel webLink = new JLabel("<HTML><U><Center>Link to Resistration Page</Center></U></HTML>");
 			webLink.setFont(new Font("Tahoma", Font.PLAIN, 16));
 			webLink.setForeground(Color.BLUE);
 			

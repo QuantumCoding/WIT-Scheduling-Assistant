@@ -56,9 +56,9 @@ public class LookupResultsPage extends Page {
 	}
 	
 	public static class LookupResult {
-		private String subject;
-		private String className;
-		private String classId;
+		protected String subject;
+		protected String className;
+		protected String classId;
 		
 		private HtmlSubmitInput select;
 		
@@ -73,6 +73,8 @@ public class LookupResultsPage extends Page {
 			
 			select = form.getInputByName(References.Lookup_Result_Select);
 		}
+		
+		protected LookupResult() {}
 
 		public String toString() { return getClassName(); }
 		public String getClassName() { return className; }

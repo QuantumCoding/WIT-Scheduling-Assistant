@@ -12,7 +12,7 @@ public class Location {
 	}
 	
 	public static Location parseSymbol(Campus campus, String loc) {
-		int index = loc.indexOf(" ");
+		int index = loc.lastIndexOf(" ");
 		if(loc.equals("TBA")) return new Location(campus, null, null);
 		return new Location(campus, loc.substring(0, index), loc.substring(index + 1));
 	}
