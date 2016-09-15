@@ -43,6 +43,10 @@ public class References {
 	public static final String Save_Root = (System.getProperty("os.name").toUpperCase().contains("WIN") ? 
 			System.getenv("AppData") : System.getProperty("user.home")) + "/WIT Scheduling Assistant";
 
+// ----------------------------------------------- Time Pref. ----------------------------------------------------------- \\
+
+	public static final String Time_Pref_Location = Save_Root + "/pref.dat";
+	
 // ----------------------------------------------- Vault ----------------------------------------------------------- \\
 	
 	public static final String Vault_Location = Save_Root + "/vault.key";

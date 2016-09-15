@@ -21,7 +21,7 @@ public class LoadingScreen extends JPanel {
 	
 	public LoadingScreen() {
 		setBackground(Color.WHITE);
-		setLayout(new MigLayout("", "[][grow][]", "[][grow][]"));
+		setLayout(new MigLayout("", "[][grow,center][]", "[][grow,center][]"));
 		
 		JPanel midPanel = new JPanel();
 		midPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));

@@ -5,9 +5,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import pages.LookupResultsPage.LookupResult;
+import pages.wit.LookupResultsPage.LookupResult;
+import web_interface.PageLock;
 
-public class Schedule {
+public class Schedule implements Comparable<Schedule> {
 	private int id;
 	private Scheduler creator;
 	private ArrayList<Section> sections;
@@ -18,11 +19,16 @@ public class Schedule {
 	
 	private ArrayList<Integer> levelSizes;
 	private HashMap<Integer, ArrayList<ClassConfig>> variants;
+	private float weight;
 	
-	public Schedule(ArrayList<Section> sections, Scheduler creator, int id) {
+//	private PageLock pages;
+	
+	public Schedule(ArrayList<Section> sections, Scheduler creator, PageLock pages, int id) {
 		this.id = id;
 		this.creator = creator;	
 		this.sections = sections;
+		
+//		this.pages = pages;
 	}
 	
 	public Schedule(ArrayList<Section> sections) {
@@ -72,15 +78,15 @@ public class Schedule {
 		
 		colorMap = creator.getColorMap();
 		
-		System.out.print("Schedule: ");
-		for(Section section : schedulable.keySet()) {
-			System.out.print("\n\t -" + section.getClassName() + " : " + section.getCourseNumber() + " [");
-			for(ClassConfig config : schedulable.get(section))
-				System.out.print(config.getLab());
-			System.out.print("]");
-		}
+//		System.out.print("Schedule: ");
+//		for(Section section : schedulable.keySet()) {
+//			System.out.print("\n\t -" + section.getClassName() + " : " + section.getCourseNumber() + " [");
+//			for(ClassConfig config : schedulable.get(section))
+//				System.out.print(config.getLab());
+//			System.out.print("]");
+//		}
 		
-		System.out.println();
+//		System.out.println();
 		
 		creator = null;
 		return isValid = true;
@@ -122,6 +128,43 @@ public class Schedule {
 		}
 	}
 	
+	public void calculateWeight(float[][] rankings) {
+		int count = 0;
+		float sum = 0;
+		
+		for(Section section : schedulable.keySet()) {
+			float max = 0;
+			for(ClassConfig config : schedulable.get(section)) {
+				if(config.getLab() == ClassConfig.NO_LAB) continue;
+				float weight = getWeight(rankings, section.getLabs().get(config.getLab()).getDesignations());
+				if(weight > max) max = weight;
+			}
+			
+			sum += max; count ++;
+			sum += getWeight(rankings, section.getDesignations()); count ++;
+		}
+		
+		weight = sum / count;
+		
+//		sum = 0; count = 0;
+//		for(Section section : schedulable.keySet()) {
+//			sum += pages.getProfessorRating(section.getInstructor(), 
+//						section.getDesignations().get(0).getLocation().getCampus()); 
+//			count ++;
+//		}
+//		
+//		weight = (sum / count) * 0.25f + weight * 0.75f;
+	}
+	
+	private float getWeight(float[][] ranking, ArrayList<Designation> designations) {
+		float sum = 0;
+		for(Designation designation : designations) 
+			sum += designation.getPeriod().weight(ranking);
+		return sum / designations.size();
+	} 
+	
+	public float getWeight() { return weight; }
+	
 	public ArrayList<Integer> getClassIds(int variant) {
 		ArrayList<Integer> classIds = new ArrayList<>();
 		for(ClassConfig config : getVarient(variant)) {
@@ -143,5 +186,9 @@ public class Schedule {
 	
 	public String toString() {
 		return creator == null ? schedulable.toString() : "Valid?";
+	}
+
+	public int compareTo(Schedule other) {
+		return Float.compare(this.weight, other.weight);
 	}
 }

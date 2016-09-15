@@ -1,4 +1,4 @@
-package pages;
+package pages.wit;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -9,7 +9,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableBody;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
-import pages.LookupResultsPage.LookupResult;
+import pages.Page;
+import pages.wit.LookupResultsPage.LookupResult;
 import scheduling.Section;
 
 public class SectionsPage extends Page {

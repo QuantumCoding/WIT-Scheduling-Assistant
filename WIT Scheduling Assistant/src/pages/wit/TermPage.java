@@ -1,4 +1,4 @@
-package pages;
+package pages.wit;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,6 +8,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlInput;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.gargoylesoftware.htmlunit.html.HtmlSelect;
 
+import pages.Page;
 import util.Choise;
 import util.References;
 

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -54,8 +53,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	
 	public ScheduleDisplayScreen(Display display, ArrayList<Schedule> schedules) {
 		this.display = display;
-		this.schedules = new ArrayList<>(schedules);
-		Collections.shuffle(this.schedules);
+		this.schedules = schedules;
 		
 		setBackground(Color.WHITE);
 		setLayout(new MigLayout("insets 1px", "[grow]", "[top][top][grow][]"));

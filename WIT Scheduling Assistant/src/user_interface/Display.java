@@ -15,7 +15,7 @@ import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import pages.LookupResultsPage.LookupResult;
+import pages.wit.LookupResultsPage.LookupResult;
 import scheduling.Schedule;
 import scheduling.Scheduler;
 import scheduling.SchedulingException;
@@ -32,6 +32,7 @@ public class Display extends JFrame {
 	private LoadingScreen loadingScreen;
 	private AddClassScreen addClassScreen;
 	private ScheduleDisplayScreen displayScreen;
+	private TimePreferanceScreen timeScreen;
 	
 	private PageLock pages;
 	private SecretKeyUtil vault;
@@ -53,6 +54,7 @@ public class Display extends JFrame {
 		loginScreen = new LoginScreen(pages, this);
 		menuScreen = new MainMenuScreen(pages, this);
 		loadingScreen = new LoadingScreen();
+		timeScreen = new TimePreferanceScreen(this);
 		
 		setTitle("WIT Scheduling Assistant");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -64,7 +66,8 @@ public class Display extends JFrame {
 		contentPane.add(menuScreen, "menuScreen");
 		contentPane.add(loginScreen, "loginScreen");
 		contentPane.add(loadingScreen, "loadingScreen");
-		
+		contentPane.add(timeScreen, "timeScreen");
+
 		((CardLayout) contentPane.getLayout()).show(contentPane, "loginScreen");
 		
 		pack();
@@ -78,6 +81,10 @@ public class Display extends JFrame {
 	
 	public void switchToMainMenu() {
 		((CardLayout) contentPane.getLayout()).show(contentPane, "menuScreen");
+	}
+	
+	public void switchToTimePreferences() {
+		((CardLayout) contentPane.getLayout()).show(contentPane, "timeScreen");
 	}
 	
 	public void showSchedules(ArrayList<Schedule> schedules) {
@@ -109,15 +116,17 @@ public class Display extends JFrame {
 		switchToMainMenu();
 	}
 	
+	public boolean shouldSave() { return loginScreen.rememberMe(); }
+	
 	public void submitClasses(ArrayList<LookupResult> classes) {
 		showLoading("Collecting Class Options...");
 		scheduler = new Scheduler(pages, classes);
+		scheduler.setRankings(timeScreen.getRankings());
 		new SchedulerTask().execute();
 	}
 	
 	private class SchedulerTask extends SwingWorker<Void, Integer> {
-		private boolean creationDone;
-		private boolean trimingDone;
+		private int stage, useCount;
 		private boolean error;
 		
 		private String errorMessage;
@@ -139,14 +148,14 @@ public class Display extends JFrame {
 			
 			try { Thread.sleep(500); } catch(InterruptedException e) {}
 			
-			creationDone = false; trimingDone = false;
+			stage = 0;
 			for(int i = 0; i < possibleScheduals; i ++) {
 				scheduler.createSchedule(i);
 				publish(i + 1);
 			}
 
 			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			creationDone = true; 
+			stage = 1;
 			for(int i = 0; i < possibleScheduals; i ++) {
 				scheduler.removeInvalidSchedules(i);
 				publish(i + 1);
@@ -162,13 +171,22 @@ public class Display extends JFrame {
 			
 			ArrayList<Schedule> schedules = scheduler.getSchedules();
 			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			trimingDone = true;
+			stage = 2; useCount = schedules.size();
 			
 			for(int i = 0; i < schedules.size(); i ++) {
 				scheduler.calculateVariants(schedules.get(i).getId());
 				publish(i + 1);
 			}
-
+			
+			try { Thread.sleep(500); } catch(InterruptedException e) {}
+			stage = 3;
+			
+			for(int i = 0; i < schedules.size(); i ++) {
+				scheduler.calculateWeights(schedules.get(i).getId());
+				publish(i + 1);
+			}
+			
+			try { Thread.sleep(500); } catch(InterruptedException e) {}
 			return null;
 		}
 		
@@ -183,25 +201,41 @@ public class Display extends JFrame {
 				break;
 				
 				default: 
-					if(trimingDone) {
-						showLoading("Creating Varaints [" + 
-							values.get(values.size() - 1) + " / " + scheduler.getSchedules().size() + "]",
-							values.get(values.size() - 1), scheduler.getSchedules().size());  break;
-							
-					} else {
-						showLoading((creationDone ? "Removing Invalid Schedules " : "Creating Scedule ")
-								+ "[" + values.get(values.size() - 1) + " / " + scheduler.posible() + "]", 
-								values.get(values.size() - 1), scheduler.posible());  break;
+					switch(stage) {
+						
+						case 0:
+							showLoading("Creating Scedule "
+									+ "[" + values.get(values.size() - 1) + " / " + scheduler.posible() + "]", 
+									values.get(values.size() - 1), scheduler.posible());  
+						break;
+						
+						case 1:
+							showLoading("Removing Invalid Schedules "
+									+ "[" + values.get(values.size() - 1) + " / " + scheduler.posible() + "]", 
+									values.get(values.size() - 1), scheduler.posible());  
+						break;
+						
+						case 2:
+							showLoading("Creating Varaints [" + 
+								values.get(values.size() - 1) + " / " + useCount + "]",
+								values.get(values.size() - 1), useCount);  
+						break;
+						
+						case 3:
+							showLoading("Calculating Weights [" + 
+								values.get(values.size() - 1) + " / " + useCount + "]",
+								values.get(values.size() - 1), useCount);  
+						break;
 					}
 			}
 		}
 		
 		protected void done() {
-			if(!creationDone)
+			if(stage < 1)
 				return;
 			
 			scheduler.cleanOut();
-			System.out.println("Done");
+//			System.out.println("Done");
 			
 			if(!error) {
 				displayScreen = new ScheduleDisplayScreen(Display.this, scheduler.getSchedules());

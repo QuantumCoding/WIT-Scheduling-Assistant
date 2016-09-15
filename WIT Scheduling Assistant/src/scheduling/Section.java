@@ -9,7 +9,7 @@ import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
-import pages.LookupResultsPage.LookupResult;
+import pages.wit.LookupResultsPage.LookupResult;
 
 public class Section {
 	private static final boolean DEBUG_ALLOW_NON_REG_CLASS = true;

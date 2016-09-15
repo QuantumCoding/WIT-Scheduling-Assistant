@@ -1,4 +1,4 @@
-package pages;
+package pages.wit;
 
 import java.io.IOException;
 import java.net.URL;
@@ -12,7 +12,8 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableBody;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
-import pages.LookupResultsPage.LookupResult;
+import pages.Page;
+import pages.wit.LookupResultsPage.LookupResult;
 import scheduling.Campus;
 import scheduling.Designation;
 import scheduling.Schedule;

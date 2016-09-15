@@ -2,10 +2,10 @@ import java.io.IOException;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 
-import pages.LoginPage;
 import pages.Page;
-import pages.SchedulePage;
-import pages.TermPage;
+import pages.wit.LoginPage;
+import pages.wit.SchedulePage;
+import pages.wit.TermPage;
 import web_interface.WebClientCreater;
 
 public class PageTester {

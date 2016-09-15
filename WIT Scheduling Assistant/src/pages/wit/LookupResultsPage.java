@@ -1,4 +1,4 @@
-package pages;
+package pages.wit;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTable;
 import com.gargoylesoftware.htmlunit.html.HtmlTableBody;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 
+import pages.Page;
 import util.References;
 
 public class LookupResultsPage extends Page {

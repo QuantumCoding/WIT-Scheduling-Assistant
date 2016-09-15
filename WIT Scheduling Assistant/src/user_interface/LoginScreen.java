@@ -52,7 +52,7 @@ public class LoginScreen extends JPanel implements ActionListener {
 		this.display = display;
 		
 		setBackground(Color.WHITE);
-		setLayout(new MigLayout("", "[grow][center][grow]", "[grow][center][grow]"));
+		setLayout(new MigLayout("", "[][grow,fill][]", "[][grow,fill][]"));
 		
 		JPanel loginPanel = new JPanel();
 		add(loginPanel, "cell 1 1");
@@ -166,4 +166,6 @@ public class LoginScreen extends JPanel implements ActionListener {
 			}
 		}).start();
 	}
+	
+	public boolean rememberMe() { return rememberMeCheckBox.isSelected(); } 
 }

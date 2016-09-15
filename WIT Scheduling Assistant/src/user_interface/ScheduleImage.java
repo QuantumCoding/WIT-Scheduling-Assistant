@@ -27,16 +27,16 @@ import scheduling.Section;
 public class ScheduleImage extends BufferedImage {
 	private static JFileChooser fileChooser;
 	
-	private static final int RESOLUTION_X = 1024;
-	private static final int RESOLUTION_Y = 2048;
+	protected static final int RESOLUTION_X = 1024;
+	protected static final int RESOLUTION_Y = 2048;
 
 	public static final int RESOLUTION_XP = RESOLUTION_X + 3;
 	public static final int RESOLUTION_YP = RESOLUTION_Y + 3;
 	
-	private static final int TIME_RESOLUTION = 10;
+	public static final int TIME_RESOLUTION = 10;
 	
-	private static final int MIN_HOUR = 8, MAX_HOUR = 22;
-	private static final int TIME_DURATION_HOURS = MAX_HOUR - MIN_HOUR;
+	public static final int MIN_HOUR = 8, MAX_HOUR = 22;
+	public static final int TIME_DURATION_HOURS = MAX_HOUR - MIN_HOUR;
 	
 	private static final Stroke BACKGOUND_WEEK_STROKE = new BasicStroke(3);
 	private static final Color BACKGOUND_WEEK_COLOR = new Color(125, 125, 125);
@@ -130,6 +130,7 @@ public class ScheduleImage extends BufferedImage {
 //	------------------------------ End of Static ------------------------------ \\
 	
 	private Schedule schedule;
+	private Color[][][] shadingModel;
 	
 	public ScheduleImage(Schedule schedule, int variant) {
 		super(RESOLUTION_X + 3, RESOLUTION_Y + 3, TYPE_INT_ARGB);
@@ -142,12 +143,48 @@ public class ScheduleImage extends BufferedImage {
 		Graphics2D g = createGraphics();
 		g.setBackground(Color.WHITE);
 		g.clearRect(0, 0, RESOLUTION_XP, RESOLUTION_YP);
-		
+
 		drawGrid(g);
 		
-		ArrayList<ClassConfig> scheduleVarient = schedule.getVarient(variant);
-		for(ClassConfig config : scheduleVarient)
-			drawClass(g, config);
+		if(shadingModel != null)
+			drawShading(g);
+		
+		if(schedule != null) {
+			ArrayList<ClassConfig> scheduleVarient = schedule.getVarient(variant);
+			for(ClassConfig config : scheduleVarient)
+				drawClass(g, config);
+		}
+	}
+	
+	private void drawShading(Graphics2D g) {
+		int length = WeekDay.values().length;
+		float rectLength = (RESOLUTION_X / (float) length);
+		
+		int height = TIME_DURATION_HOURS * 60 / TIME_RESOLUTION;
+		float rectHeight = (RESOLUTION_Y / (float) height);
+		
+		for(int i = 0; i < length; i ++) {
+			int x = (int) (i * rectLength);
+			
+			for(int j = 0; j < height; j ++) {
+				int y = (int) (j * rectHeight);
+				
+				g.setColor(shadingModel[0][i][j]);
+				g.fillRect(x, y, (int) rectLength + 3, (int) rectHeight + 3);
+			}
+		}
+		
+		for(int i = 0; i < length; i ++) {
+			int x = (int) (i * rectLength);
+			
+			for(int j = 0; j < height; j ++) {
+				int y = (int) (j * rectHeight);
+				
+				g.setColor(shadingModel[1][i][j]);
+				g.fillRect(x, y, (int) rectLength + 3, (int) rectHeight + 3);
+			}
+			
+		}
 	}
 	
 	private void drawGrid(Graphics2D g) {
@@ -201,6 +238,7 @@ public class ScheduleImage extends BufferedImage {
 			Section lab = config.getSection().getLabs().get(config.getLab());
 			for(Designation designation : lab.getDesignations())
 				drawDesignation(g, classColor, lab, designation);
+			
 		}
 	}
 
@@ -357,6 +395,8 @@ public class ScheduleImage extends BufferedImage {
 		
 		return letter.getBounds2D();
 	}
+	
+	public void setShadingModel(Color[][][] shadingModel) { this.shadingModel = shadingModel; }
 	
 	public void save() {
 		int result = fileChooser.showSaveDialog(null);

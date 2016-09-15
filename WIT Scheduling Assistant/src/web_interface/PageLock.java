@@ -7,13 +7,15 @@ import java.util.HashMap;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-import pages.LoginPage;
-import pages.LookupResultsPage;
-import pages.LookupResultsPage.LookupResult;
 import pages.Page;
-import pages.SchedulePage;
-import pages.SubjectPage;
-import pages.TermPage;
+import pages.rmp.RMP_Search;
+import pages.wit.LoginPage;
+import pages.wit.LookupResultsPage;
+import pages.wit.SchedulePage;
+import pages.wit.SubjectPage;
+import pages.wit.TermPage;
+import pages.wit.LookupResultsPage.LookupResult;
+import scheduling.Campus;
 import scheduling.Schedule;
 import scheduling.Section;
 import user_interface.Display;
@@ -46,6 +48,11 @@ public class PageLock {
 	private volatile ArrayList<LookupResult> classes;
 	private volatile HashMap<LookupResult, ArrayList<Section>> options;
 	private volatile boolean collectSections;
+	
+	private volatile float rating;
+	private volatile Campus campus;
+	private volatile String professor;
+	private volatile boolean rateProfessor;
 	
 //	private volatile int[] registerClasses;
 //	private volatile SchedulingException[] registerErrors;
@@ -119,6 +126,11 @@ public class PageLock {
 			if(requestSchedule) {
 				schedulePage = new SchedulePage();
 				requestSchedule = false;
+			}
+			
+			if(rateProfessor) {
+				rating = RMP_Search.search(professor, campus);
+				rateProfessor = false;
 			}
 			
 //			if(register) {
@@ -225,6 +237,21 @@ public class PageLock {
 		}
 		
 		return schedulePage.getSchedule(); 
+	}
+	
+	public float getProfessorRating(String professor, Campus campus) {
+		waitForOpening();
+		
+		this.campus = campus;           
+		this.professor = professor;        
+		rateProfessor = true;  
+		
+		synchronized(sycn) {
+			try { sycn.wait(); } 
+			catch(InterruptedException e) { return .5f; }
+		}
+		
+		return rating;
 	}
 	
 //	public SchedulingException[] register(int... registerClasses) {

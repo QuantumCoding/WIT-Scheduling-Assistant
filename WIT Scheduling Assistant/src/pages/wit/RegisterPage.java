@@ -1,4 +1,4 @@
-package pages;
+package pages.wit;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableCell;
 import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import com.gargoylesoftware.htmlunit.html.HtmlTextInput;
 
+import pages.Page;
 import scheduling.SchedulingException;
 
 public class RegisterPage extends Page {

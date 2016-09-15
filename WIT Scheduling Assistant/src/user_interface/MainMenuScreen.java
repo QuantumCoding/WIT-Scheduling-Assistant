@@ -10,7 +10,6 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -19,12 +18,14 @@ import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 import scheduling.Schedule;
+import util.References;
 import web_interface.PageLock;
 
 public class MainMenuScreen extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1247067336925789430L;
 	
 	private JButton registerButton;
+	private JButton timePreferneceButton;
 	private JButton viewButton;
 	private JButton closeButton;
 	private JLabel discriptionLabel;
@@ -43,34 +44,44 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 		midPanel.setBackground(Color.WHITE);
 		midPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		add(midPanel, "cell 1 1,grow");
-		midPanel.setLayout(new MigLayout("", "[][grow][]", "[][20%][][grow]"));
+		midPanel.setLayout(new MigLayout("", "[][][grow][]", "[][20%][][][grow]"));
 		
 		JLabel witHeaderLabel = new JLabel("");
-		witHeaderLabel.setIcon(new ImageIcon("C:\\Users\\Joshua\\git\\WIT-Scheduling-Assistant\\WIT Scheduling Assistant\\res\\witHeader.gif"));
-		midPanel.add(witHeaderLabel, "cell 0 0 3 1,alignx left,aligny top");
+		witHeaderLabel.setIcon(References.Icon_WIT_Header);
+		midPanel.add(witHeaderLabel, "cell 0 0 4 1,alignx left,aligny top");
 		
 		registerButton = new JButton("Register For Classes");
 		registerButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		registerButton.setBackground(Color.WHITE);
 		midPanel.add(registerButton, "cell 0 1,alignx left,aligny bottom");
 		
+		timePreferneceButton = new JButton("Time Preferences");
+		timePreferneceButton.setBackground(Color.WHITE);
+		timePreferneceButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		midPanel.add(timePreferneceButton, "cell 1 1,alignx left,aligny bottom");
+		
 		viewButton = new JButton("View Schedule");
 		viewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		viewButton.setBackground(Color.WHITE);
-		midPanel.add(viewButton, "cell 1 1,alignx left,aligny bottom");
+		midPanel.add(viewButton, "cell 0 2 2 1,growx,aligny bottom");
 		
 		closeButton = new JButton("Close");
 		closeButton.setBackground(Color.WHITE);
 		closeButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		midPanel.add(closeButton, "cell 2 1,alignx right,aligny bottom");
+		midPanel.add(closeButton, "cell 3 2,alignx right,aligny bottom");
 		
 		JSeparator separator = new JSeparator();
-		midPanel.add(separator, "cell 0 2 3 1,growx");
+		midPanel.add(separator, "cell 0 3 4 1,growx");
 		
 		discriptionLabel = new JLabel("Description:");
 		discriptionLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
-		midPanel.add(discriptionLabel, "cell 0 3 3 1,alignx left,aligny top");
+		midPanel.add(discriptionLabel, "cell 0 4 4 1,alignx left,aligny top");
 
+		postInit();
+	}
+	
+	private void postInit() {
+		timePreferneceButton.addActionListener(this);
 		registerButton.addActionListener(this);
 		closeButton.addActionListener(this);
 		viewButton.addActionListener(this);
@@ -82,6 +93,7 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 			public void mouseExited(MouseEvent e) { discriptionLabel.setText(""); }
 		};
 		
+		timePreferneceButton.addMouseListener(mouseListener);
 		registerButton.addMouseListener(mouseListener);
 		closeButton.addMouseListener(mouseListener);
 		viewButton.addMouseListener(mouseListener);
@@ -99,6 +111,25 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 				+ "Diplasys the User's Current Schedule graphicly"
 			+ "<p>"
 				+ "From this page, the User can save a Image of their Schedule"
+			+ "</p>"
+			+ "</HTML>");
+		
+		descriptions.put(timePreferneceButton, "<HTML>"
+			+ "<h1>Configure Time Preferences </h1>"
+			+ "<p>"
+				+ "Allows the User to specify which Periods of Time they Prefer to have Classes"
+			+ "<p>"
+				+ "The programe will use this Information to present the Best posible Schedules"
+			+ "<h2><BR>"
+				+ "To use this Tool:"
+			+ "</h2>"
+				+ "Move the Preference Slider to the Correct Color"
+			+ "<p>"
+				+ "Then Select Areas of the Scedule to fill, by <B>LEFT</B> Clicking and Dragging"
+			+ "<p>"
+				+ "To Clear an Area <B>RIGHT</B> Click and then Drag over the Undesirable  Area"
+			+ "<p><BR>"
+				+ "Changes are Automatically Recorded"
 			+ "</p>"
 			+ "</HTML>");
 		
@@ -132,6 +163,11 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 				schedule.add(pages.getSchedule());
 				display.showSchedules(schedule);
 			}).start();
+			return;
+		}
+		
+		if(e.getSource() == timePreferneceButton) {
+			display.switchToTimePreferences();
 			return;
 		}
 		

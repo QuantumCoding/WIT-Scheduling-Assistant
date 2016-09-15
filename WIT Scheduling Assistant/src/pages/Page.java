@@ -20,6 +20,7 @@ public abstract class Page {
 	protected HtmlPage page;
 	
 	public Page(String url) throws IOException {
+		if(url == null) return;
 		page = webClient.getPage(url);
 	}
 	

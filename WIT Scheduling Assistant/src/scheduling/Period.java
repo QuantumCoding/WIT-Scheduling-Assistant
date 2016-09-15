@@ -4,6 +4,8 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
+import user_interface.ScheduleImage;
+
 public class Period {
 	private WeekDay day;
 	
@@ -63,6 +65,22 @@ public class Period {
 		
 		return (startTime.isBefore(other.endTime) || startTime.equals(other.endTime)) && 
 				(endTime.isAfter(other.startTime) || endTime.equals(other.startTime));
+	}
+	
+	public float weight(float[][] rankings) {
+		float[] dayRatings = rankings[day.ordinal()];
+		
+		int startMinutes = (startTime.getHour() - ScheduleImage.MIN_HOUR) * 60 + startTime.getMinute();
+		int durationMinutes = (int) duration.toMinutes();
+		
+		int startIndex = startMinutes / ScheduleImage.TIME_RESOLUTION;
+		int length = durationMinutes / ScheduleImage.TIME_RESOLUTION;
+		
+		float sum = 0;
+		for(int i = 0; i < length; i ++)
+			sum += dayRatings[startIndex + i];
+		
+		return sum / length;
 	}
 	
 	public WeekDay getDay() { return day; }

@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-import pages.LookupResultsPage.LookupResult;
+import pages.wit.LookupResultsPage.LookupResult;
 import web_interface.PageLock;
 
 public class Scheduler {
@@ -15,8 +15,12 @@ public class Scheduler {
 	private ArrayList<Integer> levelSizes;
 	private HashMap<Integer, Schedule> schedules;
 	
+	private float[][] timeRankings;
+	private PageLock pages;
+	
 	public Scheduler(PageLock pages, ArrayList<LookupResult> classes) {
 		options = pages.collectSections(classes);
+		this.pages = pages;
 		
 		colorMap = new HashMap<>();
 		float colorIncrement = .9f / classes.size();
@@ -24,6 +28,8 @@ public class Scheduler {
 			colorMap.put(classes.get(i), Color.getHSBColor(i * colorIncrement, 1, 1));
 		}
 	}
+	
+	public void setRankings(float[][] rankings) { this.timeRankings = rankings; }
 	
 	public void compare() {
 		validConfigs = new HashMap<>();
@@ -85,7 +91,7 @@ public class Scheduler {
 			levelId %= levelSizes.get(level - 1);
 		}
 		
-		schedules.put(id, new Schedule(sections, this, id));
+		schedules.put(id, new Schedule(sections, this, pages, id));
 	}
 	
 	public void removeInvalidSchedules(int id) {
@@ -100,12 +106,17 @@ public class Scheduler {
 		schedules.get(id).calculateVariants();
 	}
 	
+	public void calculateWeights(int id) {
+		schedules.get(id).calculateWeight(timeRankings);
+	}
+	
 	public ArrayList<Schedule> getSchedules() {
 		ArrayList<Schedule> possible = new ArrayList<>();
 		for(Integer id : schedules.keySet())
 			if(schedules.get(id) != null) 
 				possible.add(schedules.get(id));
 		
+		possible.sort(Collections.reverseOrder());
 		return possible;
 	}
 	

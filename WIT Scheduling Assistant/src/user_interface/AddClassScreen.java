@@ -29,7 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
-import pages.LookupResultsPage.LookupResult;
+import pages.wit.LookupResultsPage.LookupResult;
 import util.Choise;
 import util.References;
 import web_interface.PageLock;
