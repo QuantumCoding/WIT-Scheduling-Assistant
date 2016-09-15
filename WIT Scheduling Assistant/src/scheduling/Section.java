@@ -12,7 +12,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import pages.wit.LookupResultsPage.LookupResult;
 
 public class Section {
-	private static final boolean DEBUG_ALLOW_NON_REG_CLASS = true;
+	private static final boolean DEBUG_ALLOW_NON_REG_CLASS = false;
 	
 	private LookupResult subject;
 	private String className;
@@ -31,6 +31,7 @@ public class Section {
 	
 	private ArrayList<Section> labs;
 	
+	@SuppressWarnings("unused")
 	public Section(Section prevSection, LookupResult subject, HtmlTableRow row) {
 		List<HtmlElement> elements = row.getElementsByTagName("td");
 		if(elements.size() < 17) throw new IllegalArgumentException("Invalid TR! " + row);
