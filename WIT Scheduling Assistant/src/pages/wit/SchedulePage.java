@@ -37,6 +37,7 @@ public class SchedulePage extends Page {
 		}
 		
 		ArrayList<Section> sections = new ArrayList<>();
+		ArrayList<Section> toRemove = new ArrayList<>();
 		for(ClassPage labPage : pages) {
 			if(labPage.isLab) {
 				Section section = labPage.makeSection();
@@ -50,15 +51,16 @@ public class SchedulePage extends Page {
 							checkPage.labs = new ArrayList<>();
 						
 						checkPage.labs.add(section);
+						toRemove.add(section);
 					}
 				}
 			}
 		}
 		
+		sections.removeAll(toRemove);
+		
 		secPageLoop:
 		for(ClassPage secPage : pages) {
-			if(secPage.isLab) continue;
-			
 			for(Section section : sections)
 				if(section.getCourseNumber() == Integer.parseInt(secPage.data[4]))
 					continue secPageLoop;

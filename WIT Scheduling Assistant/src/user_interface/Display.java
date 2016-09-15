@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.KeyStoreException;
@@ -9,6 +10,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
@@ -47,6 +49,7 @@ public class Display extends JFrame {
 		
 		try {
 			this.vault = new SecretKeyUtil(Paths.get(References.Vault_Location), References.Vault_Password.toCharArray());
+			setIconImage(new ImageIcon("res/WITSchedulerIcon.png").getImage());
 		} catch(KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			e.printStackTrace();
 		}
@@ -117,6 +120,7 @@ public class Display extends JFrame {
 	}
 	
 	public boolean shouldSave() { return loginScreen.rememberMe(); }
+	public Color[][][] getTimeSchadingModel() { return timeScreen.getShadingModel(); }
 	
 	public void submitClasses(ArrayList<LookupResult> classes) {
 		showLoading("Collecting Class Options...");

@@ -16,6 +16,8 @@ public enum Campus {
 		this.name = name;
 	}
 	
+	public String getName() { return name; }
+	
 	public static Campus getByName(String name) {
 		for(Campus campus : values()) {
 			if(campus.name == null) continue;

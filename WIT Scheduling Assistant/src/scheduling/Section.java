@@ -89,7 +89,7 @@ public class Section {
 		}
 		
 		notViable:
-		if(isOpen) {
+		if(isOpen || true) {
 			isViable = false;
 			
 			for(Designation designation : designations)

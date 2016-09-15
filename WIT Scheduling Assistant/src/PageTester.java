@@ -3,9 +3,8 @@ import java.io.IOException;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 import pages.Page;
-import pages.wit.LoginPage;
-import pages.wit.SchedulePage;
-import pages.wit.TermPage;
+import pages.rmp.RMP_Search;
+import scheduling.Campus;
 import web_interface.WebClientCreater;
 
 public class PageTester {
@@ -13,11 +12,14 @@ public class PageTester {
 		try(WebClient w = WebClientCreater.initWebClient()) {
 			Page.setWebClient(w);
 			
-			LoginPage loginPage = new LoginPage();
-			loginPage.login("cilfonej", "#Cbmuku35");
+			float rating = RMP_Search.search("Magdy Ellabidy", Campus.WIT);
+			System.out.println(rating);
 			
-			new SchedulePage();
-			/*TermPage termPage = */new TermPage();
+//			LoginPage loginPage = new LoginPage();
+//			loginPage.login("cilfonej", "#Cbmuku35");
+//			
+//			new SchedulePage();
+//			/*TermPage termPage = */new TermPage();
 //			System.out.println(termPage.changeTerm(termPage.getTerms().get(0)).getTitleText());
 
 //			RegisterPage registerPage = new RegisterPage();

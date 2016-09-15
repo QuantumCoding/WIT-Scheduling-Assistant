@@ -14,6 +14,7 @@ public class ScheduleView extends JScrollPane {
 
 	private ScheduleImage scheduleImage;
 	private JPanel scheduleDisplay;
+	private int variant;
 	
 	public ScheduleView(Schedule schedule) {
 		getVerticalScrollBar().setUnitIncrement(ScheduleImage.RESOLUTION_YP / 72);
@@ -57,6 +58,11 @@ public class ScheduleView extends JScrollPane {
 	private void paintSchedule(Graphics g) {
 		g.drawImage(scheduleImage, 0, 0, ScheduleImage.RESOLUTION_XP, ScheduleImage.RESOLUTION_YP, null);
 	}
+	
+	public void setShadingModel(Color[][][] shadingModel) {
+		scheduleImage.setShadingModel(shadingModel);
+		scheduleImage.render(variant);
+	}
 
 	public void changeSchedule(Schedule schedule) {
 		scheduleImage = new ScheduleImage(schedule, 0);
@@ -64,6 +70,7 @@ public class ScheduleView extends JScrollPane {
 	}
 	
 	public void changeVariant(int variant) {
+		this.variant = variant;
 		scheduleImage.render(variant);
 		scheduleDisplay.repaint();
  	}

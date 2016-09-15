@@ -1,5 +1,7 @@
 package web_interface;
 
+import java.util.logging.Logger;
+
 import com.gargoylesoftware.htmlunit.WebClient;
 
 public class WebClientCreater {
@@ -15,6 +17,9 @@ public class WebClientCreater {
 		
 		webClient.getOptions().setRedirectEnabled(true);
 		
+		Logger.getLogger("com.gargoylesoftware.htmlunit").setLevel(java.util.logging.Level.OFF);
+		Logger.getLogger("org.apache.http").setLevel(java.util.logging.Level.OFF);
+
 		return webClient;
 	}
 }

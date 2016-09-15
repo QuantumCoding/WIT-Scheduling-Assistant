@@ -118,6 +118,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 	}
 	
 	public float[][] getRankings() { return timePreferanceView.getRankings(); }
+	public Color[][][] getShadingModel() { return timePreferanceView.getShadingModel(); }
 	
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == menuButton) {

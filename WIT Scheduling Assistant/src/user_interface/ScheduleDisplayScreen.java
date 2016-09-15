@@ -16,6 +16,7 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -40,6 +41,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	
 	private JButton saveImageButton;
 	private JButton menuButton;
+	private JCheckBox overlayButton;
 
 	private JLabel variantLabel;
 	private JComboBox<Integer> variantComboBox;
@@ -61,17 +63,22 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		JPanel topPanel = new JPanel();
 		topPanel.setBackground(Color.WHITE);
 		add(topPanel, "cell 0 0 1 2,grow");
-		topPanel.setLayout(new MigLayout("", "[grow][][20%,right]", "[grow]"));
+		topPanel.setLayout(new MigLayout("", "[grow][][][20%,right]", "[grow]"));
+		
+		overlayButton = new JCheckBox("<HTML><CENTER>Overlay<BR>Pref.</CENTER></HTML>");
+		overlayButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		overlayButton.setBackground(Color.WHITE);
+		topPanel.add(overlayButton, "cell 1 0,aligny bottom");
 		
 		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
 		menuButton.setFont(new Font("Tahoma", Font.BOLD, 14));
 		menuButton.setBackground(Color.WHITE);
-		topPanel.add(menuButton, "cell 1 0,growy");
+		topPanel.add(menuButton, "cell 2 0,growy");
 		
 		JPanel scheduleControlPanel = new JPanel();
 		scheduleControlPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		scheduleControlPanel.setBackground(Color.WHITE);
-		topPanel.add(scheduleControlPanel, "flowx,cell 2 0,growx,aligny center");
+		topPanel.add(scheduleControlPanel, "flowx,cell 3 0,growx,aligny center");
 		scheduleControlPanel.setLayout(new MigLayout("", "[grow][grow]", "[grow][][]"));
 		
 		JLabel witHeaderLabel = new JLabel("Possible Schedules");
@@ -133,11 +140,13 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		variantComboBox.addActionListener(this);
 		
 		menuButton.addActionListener(this);
+		overlayButton.addActionListener(this);
 		
 		updateLabel();
 	}
 	
 	public void setSchedules(ArrayList<Schedule> schedules) {
+		selectedIndex = 0;
 		this.schedules = schedules; updateLabel();
 	}
 	
@@ -158,6 +167,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		variantLabel.setVisible(variantComboBox.isVisible());
 		
 		scheduleDisplayScrollPane.changeSchedule(schedules.get(selectedIndex));
+		actionPerformed(new ActionEvent(overlayButton, 0, ""));
 		
 		updating = false;
 	}
@@ -200,6 +210,16 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		
 		if(e.getSource() == menuButton) {
 			display.switchToMainMenu();
+			return;
+		}
+		
+		if(e.getSource() == overlayButton) {
+			if(overlayButton.isSelected()) 
+				scheduleDisplayScrollPane.setShadingModel(display.getTimeSchadingModel());
+			else
+				scheduleDisplayScrollPane.setShadingModel(null);
+			
+			updateLabel();
 			return;
 		}
 		

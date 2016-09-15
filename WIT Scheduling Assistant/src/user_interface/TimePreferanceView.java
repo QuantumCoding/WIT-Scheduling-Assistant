@@ -85,6 +85,8 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	
 	private Color currentRank, modifyRank, modifyRankHold;
 	
+	public Color[][][] getShadingModel() { return shadingModel; }
+	
 	public float[][] getRankings() {
 		float[][] ranks = new float[shadingModel[0].length][shadingModel[0][0].length];
 		for(int i = 0; i < ranks.length; i ++) 
@@ -116,13 +118,18 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	
 	public void load() {
 		try(DataInputStream in = new DataInputStream(Files.newInputStream(Paths.get(References.Time_Pref_Location)))) {
+			Color current = currentRank;
 			
 			for(int i = 0; i < shadingModel[0].length; i ++) { 
 			for(int j = 0; j < shadingModel[0][i].length; j ++) {
 				float ranking = in.readFloat(); 
 				shadingModel[0][i][j] = Color.getHSBColor(ranking * 5f/3f, 1, 1);
+				setRank(shadingModel[0][i][j]);
+				shadingModel[0][i][j] = currentRank;
 			}}
 			
+			currentRank = current;
+			updateImage();
 		} catch(IOException e) {}
 	}
 	
