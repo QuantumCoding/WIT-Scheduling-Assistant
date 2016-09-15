@@ -10,6 +10,7 @@ import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -49,7 +50,7 @@ public class Display extends JFrame {
 		
 		try {
 			this.vault = new SecretKeyUtil(Paths.get(References.Vault_Location), References.Vault_Password.toCharArray());
-			setIconImage(new ImageIcon("res/WITSchedulerIcon.png").getImage());
+			setIconImage(ImageIO.read(Display.class.getResource("WITSchedulerIcon.png")));
 		} catch(KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
 			e.printStackTrace();
 		}

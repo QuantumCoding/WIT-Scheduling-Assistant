@@ -1,6 +1,11 @@
 package util;
 
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
+
+import user_interface.Display;
 
 public class References {
 	public static final String BaseUrl = "https://prodweb2.wit.edu/";
@@ -76,7 +81,14 @@ public class References {
 	public static final String Thread_Name = "WIT-Pages Thread";
 
 // ----------------------------------------------- Images ----------------------------------------------------------- \\
-	public static final ImageIcon Icon_WIT_Header = new ImageIcon("res/witHeader.gif");
+	public static ImageIcon Icon_WIT_Header = null;
+	static { 
+		 try {
+			Icon_WIT_Header = new ImageIcon(ImageIO.read(Display.class.getResource("witHeader.gif")));
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+	}
 	
 	private References() {}
 }
