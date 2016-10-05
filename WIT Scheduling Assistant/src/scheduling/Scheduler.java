@@ -18,8 +18,31 @@ public class Scheduler {
 	private float[][] timeRankings;
 	private PageLock pages;
 	
-	public Scheduler(PageLock pages, ArrayList<LookupResult> classes) {
-		options = pages.collectSections(classes);
+	public Scheduler(PageLock pages, ArrayList<LookupResult> classes) { this(pages, classes, null, null); }
+	
+	public Scheduler(PageLock pages, ArrayList<LookupResult> classes, HashMap<LookupResult, ArrayList<Section>> preCollectedSections, HashMap<LookupResult, ArrayList<Boolean>> nonViable) {
+		options = new HashMap<>();
+		ArrayList<LookupResult> collectClasses = new ArrayList<>(classes);
+		
+		if(preCollectedSections != null && nonViable != null) {
+			collectClasses.removeAll(preCollectedSections.keySet());
+			
+			for(LookupResult clazz : preCollectedSections.keySet()) {
+				ArrayList<Section> collectedSections;
+				options.put(clazz, collectedSections = new ArrayList<>());
+				
+				ArrayList<Boolean> valid = nonViable.get(clazz);
+				ArrayList<Section> sections = preCollectedSections.get(valid);
+				
+				for(int i = 0; i < valid.size(); i ++) {
+					if(valid.get(i)) {
+						collectedSections.add(sections.get(i));
+					}
+				}
+			}
+		}	
+		
+		options.putAll(pages.collectSections(collectClasses));
 		this.pages = pages;
 		
 		colorMap = new HashMap<>();

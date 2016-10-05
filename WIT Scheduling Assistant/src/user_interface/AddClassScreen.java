@@ -61,7 +61,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	
 	private HashMap<LookupResult, ArrayList<Section>> nonInvalidSections;
 	private HashMap<LookupResult, ArrayList<Boolean>> invalidSectionMarkings;
-	private LookupResult limitingSection;
+	private volatile LookupResult limitingSection;
 
 	public AddClassScreen(PageLock pages, Display display) {
 		setBackground(Color.WHITE);
@@ -98,6 +98,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		limitSectionsList = new JPanel();
 		limitSectionsScrollPane.setViewportView(limitSectionsList);
 		limitSectionsList.setLayout(new BoxLayout(limitSectionsList, BoxLayout.Y_AXIS));
+		limitSectionsScrollPane.getVerticalScrollBar().setUnitIncrement(16);
 		
 		JPanel classesLabelPanel = new JPanel();
 		rightPanel.add(classesLabelPanel, "cell 0 2");
@@ -314,46 +315,63 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			if(limitingSection == null) return;
 			
 			int compIndex = Integer.parseInt(((JCheckBox) e.getSource()).getName());
-			invalidSectionMarkings.get(limitSectionsList).set(compIndex, ((JCheckBox) e.getSource()).isSelected());
+			invalidSectionMarkings.get(getLimitingSection()).set(compIndex, ((JCheckBox) e.getSource()).isSelected());
 			return;
 		}
 	}
 
 	private boolean currentlyAdding;
+	private final Object lock = new Object();
+	
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == classesList) {
 			removeButton.setEnabled(classesList.getSelectedIndex() != -1);
-			limitSectionsList.removeAll();
-			limitingSection = null;
 			
 			new Thread(() -> {
-				if(currentlyAdding) return;
+				while(currentlyAdding) {
+					synchronized(lock) {
+						try { lock.wait(); } 
+						catch(Exception e1) { }
+					}
+				}
+
+				currentlyAdding = true;
+
+				limitSectionsList.removeAll();
+				setLimitingSection(null);
 				
 				if(removeButton.isEnabled()) {
-					limitingSection = classesList.getSelectedValue();
-					if(limitingSection == null) return;
-					currentlyAdding = true;
+					setLimitingSection(classesList.getSelectedValue());
+					if(getLimitingSection() == null) {
+						currentlyAdding = false;
+						return;
+					}
 					
 					ArrayList<LookupResult> wrapper = new ArrayList<>();
-					wrapper.add(limitingSection);
+					wrapper.add(getLimitingSection());
 
 					ArrayList<Section> sections;
-					if((sections = nonInvalidSections.get(limitingSection)) == null) {
-						sections = pages.collectSections(wrapper).get(limitingSection);
-						nonInvalidSections.put(limitingSection, sections);
+					if((sections = nonInvalidSections.get(getLimitingSection())) == null) {
+						sections = pages.collectSections(wrapper).get(getLimitingSection());
+						nonInvalidSections.put(getLimitingSection(), sections);
 						
 						ArrayList<Boolean> markings = new ArrayList<>();
 						for(int i = 0; i < sections.size(); i ++)
 							markings.add(true);
-						invalidSectionMarkings.put(limitingSection, markings);
+						invalidSectionMarkings.put(getLimitingSection(), markings);
 					}
 						
 					int i = 0;
+					ArrayList<Boolean> markings = invalidSectionMarkings.get(getLimitingSection());
+					
 					for(Section section : sections) {
-						JCheckBox valid = new JCheckBox(section.getSectionId() + " | " + section.getClassName());
+						JCheckBox valid = new JCheckBox(section.getSectionId() + " | " + 
+								section.getCourseNumber() + "  " + section.getInstructor());
+						
 						valid.setActionCommand("invalidate" + "|" + section.getSectionId());
 						valid.setFont(new Font("Tahoma", Font.PLAIN, 14));
-						valid.addActionListener(this);
+						valid.addActionListener(AddClassScreen.this);
+						valid.setSelected(markings.get(i));
 						valid.setName(i ++ + "");
 						
 						limitSectionsList.add(valid);
@@ -361,6 +379,10 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 					
 					limitSectionsList.updateUI();
 					currentlyAdding = false;
+					
+					synchronized(lock) {
+						lock.notifyAll();
+					}
 				}
 			}).start();
 			
@@ -372,4 +394,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			return;
 		}
 	}
+	
+	private LookupResult getLimitingSection() { return limitingSection; }
+	private void setLimitingSection(LookupResult limitingSection) { this.limitingSection = limitingSection; }
 }
