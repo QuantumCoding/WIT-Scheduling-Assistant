@@ -30,29 +30,29 @@ public class PageLock {
 	private SubjectPage subjectPage;
 	private SchedulePage schedulePage;
 	
-	private volatile boolean requestSchedule;
+	private boolean requestSchedule;
 	
-	private volatile boolean login;
-	private volatile String loginUsername, loginPassword;
-	private volatile HtmlPage loginReturn;
+	private boolean login;
+	private String loginUsername, loginPassword;
+	private HtmlPage loginReturn;
 	
-	private volatile boolean loginComplate;
+	private boolean loginComplate;
 	
-	private volatile Choise newTerm;
-	private volatile boolean changeTerm;
+	private Choise newTerm;
+	private boolean changeTerm;
 	
-	private volatile Choise subject;
-	private volatile LookupResultsPage results;
-	private volatile boolean lookupClasses;
+	private Choise subject;
+	private LookupResultsPage results;
+	private boolean lookupClasses;
 	
-	private volatile ArrayList<LookupResult> classes;
-	private volatile HashMap<LookupResult, ArrayList<Section>> options;
-	private volatile boolean collectSections;
+	private ArrayList<LookupResult> classes;
+	private HashMap<LookupResult, ArrayList<Section>> options;
+	private boolean collectSections;
 	
-	private volatile float rating;
-	private volatile Campus campus;
-	private volatile String professor;
-	private volatile boolean rateProfessor;
+	private float rating;
+	private Campus campus;
+	private String professor;
+	private boolean rateProfessor;
 	
 //	private volatile int[] registerClasses;
 //	private volatile SchedulingException[] registerErrors;
@@ -120,7 +120,7 @@ public class PageLock {
 					catch(IOException e) { e.printStackTrace(); }
 				}
 				
-				collectSections = true;
+				collectSections = false;
 			}
 			
 			if(requestSchedule) {

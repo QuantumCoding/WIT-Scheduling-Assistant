@@ -9,10 +9,13 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import javax.swing.BoxLayout;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -30,6 +33,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
 import pages.wit.LookupResultsPage.LookupResult;
+import scheduling.Section;
 import util.Choise;
 import util.References;
 import web_interface.PageLock;
@@ -53,26 +57,68 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	
 	private PageLock pages;
 	private Display display;
+	private JPanel limitSectionsList;
+	
+	private HashMap<LookupResult, ArrayList<Section>> nonInvalidSections;
+	private HashMap<LookupResult, ArrayList<Boolean>> invalidSectionMarkings;
+	private LookupResult limitingSection;
 
 	public AddClassScreen(PageLock pages, Display display) {
 		setBackground(Color.WHITE);
 		this.pages = pages;
 		this.display = display;
 		
-		setLayout(new MigLayout("", "[][][grow]", "[][][][][grow][]"));
+		nonInvalidSections = new HashMap<>();
+		invalidSectionMarkings = new HashMap<>();
+		
+		setLayout(new MigLayout("", "[][][grow]", "[][][grow][][grow][grow][]"));
+		
+		JLabel witIconLabel = new JLabel("");
+		witIconLabel.setIcon(References.Icon_WIT_Header);
+		add(witIconLabel, "cell 0 0 1 3,alignx center,aligny center");
+		
+		JPanel rightPanel = new JPanel();
+		rightPanel.setBackground(Color.WHITE);
+		add(rightPanel, "cell 2 1 1 5,grow");
+		rightPanel.setLayout(new MigLayout("insets 0 0 0 0", "[grow,fill]", "[][grow][][grow]"));
+		
+		JPanel limitSectionLabePanel = new JPanel();
+		limitSectionLabePanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		limitSectionLabePanel.setBackground(new Color(250, 250, 250));
+		rightPanel.add(limitSectionLabePanel, "cell 0 0,grow");
+		
+		JLabel limitSectionLabel = new JLabel("Limit Sections");
+		limitSectionLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		limitSectionLabePanel.add(limitSectionLabel);
+		
+		JScrollPane limitSectionsScrollPane = new JScrollPane();
+		limitSectionsScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		rightPanel.add(limitSectionsScrollPane, "cell 0 1,grow");
+		
+		limitSectionsList = new JPanel();
+		limitSectionsScrollPane.setViewportView(limitSectionsList);
+		limitSectionsList.setLayout(new BoxLayout(limitSectionsList, BoxLayout.Y_AXIS));
 		
 		JPanel classesLabelPanel = new JPanel();
+		rightPanel.add(classesLabelPanel, "cell 0 2");
 		classesLabelPanel.setBackground(new Color(250,250,250));
 		classesLabelPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		add(classesLabelPanel, "flowx,cell 2 0,growx,aligny bottom");
 		
 		JLabel classesLabel = new JLabel("Classes");
 		classesLabelPanel.add(classesLabel);
 		classesLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
 		
-		JLabel witIconLabel = new JLabel("");
-		witIconLabel.setIcon(References.Icon_WIT_Header);
-		add(witIconLabel, "cell 0 0 1 3,alignx center,aligny center");
+		JScrollPane classesScrollPane = new JScrollPane();
+		rightPanel.add(classesScrollPane, "cell 0 3,grow");
+		classesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+		
+		classesList = new JList<>();
+		classesList.setBackground(SystemColor.menu);
+		classesList.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		classesList.setModel(classesListModel = new DefaultListModel<>());
+		classesScrollPane.setViewportView(classesList);
+		
+		classesList.addListSelectionListener(this);
 		
 		JPanel termPanel = new JPanel();
 		termPanel.setBackground(new Color(250,250,250));
@@ -94,22 +140,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		FlowLayout fl_dividerPanel = (FlowLayout) dividerPanel.getLayout();
 		fl_dividerPanel.setVgap(0);
 		fl_dividerPanel.setHgap(0);
-		add(dividerPanel, "cell 1 0 1 6,grow");
-		
-		JScrollPane classesScrollPane = new JScrollPane();
-		classesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
-		add(classesScrollPane, "cell 2 1 1 4,grow");
-		
-		classesList = new JList<>();
-		classesList.setBackground(SystemColor.menu);
-		classesList.setFont(new Font("Tahoma", Font.PLAIN, 14));
-		classesList.setModel(classesListModel = new DefaultListModel<>());
-		classesScrollPane.setViewportView(classesList);
+		add(dividerPanel, "cell 1 0 1 7,grow");
 		
 		JPanel subjectPanel = new JPanel();
 		subjectPanel.setBackground(Color.WHITE);
 		subjectPanel.setBorder(UIManager.getBorder("ScrollPane.border"));
-		add(subjectPanel, "cell 0 4,grow");
+		add(subjectPanel, "cell 0 4 1 2,grow");
 		subjectPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 		
 		JPanel subjectSelectPanel = new JPanel();
@@ -142,7 +178,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel addPanel = new JPanel();
 		addPanel.setBackground(Color.WHITE);
 		addPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		add(addPanel, "cell 0 5,grow");
+		add(addPanel, "cell 0 6,grow");
 		addPanel.setLayout(new MigLayout("", "[][grow]", "[]"));
 		
 		addButton = new JButton("Add Class");
@@ -158,7 +194,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel removePanel = new JPanel();
 		removePanel.setBackground(Color.WHITE);
 		removePanel.setBorder(new LineBorder(new Color(204, 0, 0)));
-		add(removePanel, "cell 2 5,grow");
+		add(removePanel, "cell 2 6,grow");
 		removePanel.setLayout(new MigLayout("", "[grow][grow]", "[]"));
 		
 		removeButton = new JButton("Remove");
@@ -177,8 +213,6 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		clearButton.addActionListener(this);
 		
 		termComboBox.addActionListener(this);
-		
-		classesList.addListSelectionListener(this);
 		classSelectList.addListSelectionListener(this);
 		
 		for(Choise subject : pages.getSubjects()) 
@@ -275,11 +309,61 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			display.submitClasses(classes);
 			return;
 		}
+		
+		if(e.getActionCommand().startsWith("invalidate|")) {
+			if(limitingSection == null) return;
+			
+			int compIndex = Integer.parseInt(((JCheckBox) e.getSource()).getName());
+			invalidSectionMarkings.get(limitSectionsList).set(compIndex, ((JCheckBox) e.getSource()).isSelected());
+			return;
+		}
 	}
 
+	private boolean currentlyAdding;
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == classesList) {
 			removeButton.setEnabled(classesList.getSelectedIndex() != -1);
+			limitSectionsList.removeAll();
+			limitingSection = null;
+			
+			new Thread(() -> {
+				if(currentlyAdding) return;
+				
+				if(removeButton.isEnabled()) {
+					limitingSection = classesList.getSelectedValue();
+					if(limitingSection == null) return;
+					currentlyAdding = true;
+					
+					ArrayList<LookupResult> wrapper = new ArrayList<>();
+					wrapper.add(limitingSection);
+
+					ArrayList<Section> sections;
+					if((sections = nonInvalidSections.get(limitingSection)) == null) {
+						sections = pages.collectSections(wrapper).get(limitingSection);
+						nonInvalidSections.put(limitingSection, sections);
+						
+						ArrayList<Boolean> markings = new ArrayList<>();
+						for(int i = 0; i < sections.size(); i ++)
+							markings.add(true);
+						invalidSectionMarkings.put(limitingSection, markings);
+					}
+						
+					int i = 0;
+					for(Section section : sections) {
+						JCheckBox valid = new JCheckBox(section.getSectionId() + " | " + section.getClassName());
+						valid.setActionCommand("invalidate" + "|" + section.getSectionId());
+						valid.setFont(new Font("Tahoma", Font.PLAIN, 14));
+						valid.addActionListener(this);
+						valid.setName(i ++ + "");
+						
+						limitSectionsList.add(valid);
+					}
+					
+					limitSectionsList.updateUI();
+					currentlyAdding = false;
+				}
+			}).start();
+			
 			return;
 		}
 		
