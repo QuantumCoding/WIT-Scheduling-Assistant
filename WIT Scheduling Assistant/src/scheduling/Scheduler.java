@@ -32,7 +32,7 @@ public class Scheduler {
 				options.put(clazz, collectedSections = new ArrayList<>());
 				
 				ArrayList<Boolean> valid = nonViable.get(clazz);
-				ArrayList<Section> sections = preCollectedSections.get(valid);
+				ArrayList<Section> sections = preCollectedSections.get(clazz);
 				
 				for(int i = 0; i < valid.size(); i ++) {
 					if(valid.get(i)) {

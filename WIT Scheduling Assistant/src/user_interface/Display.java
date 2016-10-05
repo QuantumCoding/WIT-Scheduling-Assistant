@@ -8,6 +8,7 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.imageio.ImageIO;
@@ -21,6 +22,7 @@ import pages.wit.LookupResultsPage.LookupResult;
 import scheduling.Schedule;
 import scheduling.Scheduler;
 import scheduling.SchedulingException;
+import scheduling.Section;
 import security.SecretKeyUtil;
 import util.References;
 import web_interface.PageLock;
@@ -122,9 +124,9 @@ public class Display extends JFrame {
 	public boolean shouldSave() { return loginScreen.rememberMe(); }
 	public Color[][][] getTimeSchadingModel() { return timeScreen.getShadingModel(); }
 	
-	public void submitClasses(ArrayList<LookupResult> classes) {
+	public void submitClasses(ArrayList<LookupResult> classes, HashMap<LookupResult, ArrayList<Section>> preCollectedSections, HashMap<LookupResult, ArrayList<Boolean>> nonValid) {
 		showLoading("Collecting Class Options...");
-		scheduler = new Scheduler(pages, classes);
+		scheduler = new Scheduler(pages, classes, preCollectedSections, nonValid);
 		scheduler.setRankings(timeScreen.getRankings());
 		new SchedulerTask().execute();
 	}

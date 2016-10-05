@@ -307,7 +307,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			for(int i = 0; i < classesListModel.size(); i ++)
 				classes.add(classesListModel.get(i));
 			
-			display.submitClasses(classes);
+			display.submitClasses(classes, nonInvalidSections, invalidSectionMarkings);
 			return;
 		}
 		
@@ -326,6 +326,10 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == classesList) {
 			removeButton.setEnabled(classesList.getSelectedIndex() != -1);
+			if(!removeButton.isEnabled()) {
+				limitSectionsList.removeAll();
+				limitSectionsList.updateUI();
+			}
 			
 			new Thread(() -> {
 				while(currentlyAdding) {
