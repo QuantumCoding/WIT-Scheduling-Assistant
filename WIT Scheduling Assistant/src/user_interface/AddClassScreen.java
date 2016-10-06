@@ -187,7 +187,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		addButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		addPanel.add(addButton, "cell 0 0");
 		
-		submitButton = new JButton("Create Schedual");
+		submitButton = new JButton("Create Schedule");
 		submitButton.setBackground(Color.WHITE);
 		submitButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		addPanel.add(submitButton, "cell 1 0,alignx right");
@@ -326,22 +326,20 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == classesList) {
 			removeButton.setEnabled(classesList.getSelectedIndex() != -1);
-			if(!removeButton.isEnabled()) {
+			if(!removeButton.isEnabled() && !currentlyAdding) {
 				limitSectionsList.removeAll();
 				limitSectionsList.updateUI();
 			}
 			
 			new Thread(() -> {
-				while(currentlyAdding) {
+				if(currentlyAdding) {
 					synchronized(lock) {
-						try { lock.wait(); } 
+						try { lock.wait(250); } 
 						catch(Exception e1) { }
 					}
 				}
 
 				currentlyAdding = true;
-
-				limitSectionsList.removeAll();
 				setLimitingSection(null);
 				
 				if(removeButton.isEnabled()) {
@@ -357,6 +355,8 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 					ArrayList<Section> sections;
 					if((sections = nonInvalidSections.get(getLimitingSection())) == null) {
 						sections = pages.collectSections(wrapper).get(getLimitingSection());
+						if(sections == null) return;
+						
 						nonInvalidSections.put(getLimitingSection(), sections);
 						
 						ArrayList<Boolean> markings = new ArrayList<>();
@@ -367,6 +367,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 						
 					int i = 0;
 					ArrayList<Boolean> markings = invalidSectionMarkings.get(getLimitingSection());
+					limitSectionsList.removeAll();
 					
 					for(Section section : sections) {
 						JCheckBox valid = new JCheckBox(section.getSectionId() + " | " + 

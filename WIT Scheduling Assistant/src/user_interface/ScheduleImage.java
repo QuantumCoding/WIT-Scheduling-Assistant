@@ -11,6 +11,7 @@ import java.awt.font.GlyphVector;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -415,7 +416,12 @@ public class ScheduleImage extends BufferedImage {
 			g.drawImage(this, LABELS_LENGTH, HEADER_HEIGHT, null);
 			g.dispose();
 			
-			ImageIO.write(image, "png", fileChooser.getSelectedFile());
+			File file = fileChooser.getSelectedFile();
+			int index = file.toString().lastIndexOf(".");
+			if(!file.toString().substring(index + 1).equalsIgnoreCase("png"))
+				file = new File(file.toString() + ".png");
+			
+			ImageIO.write(image, "png", file);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}

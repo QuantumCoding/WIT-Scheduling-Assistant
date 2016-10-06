@@ -210,7 +210,7 @@ public class Display extends JFrame {
 					switch(stage) {
 						
 						case 0:
-							showLoading("Creating Scedule "
+							showLoading("Creating Schedule "
 									+ "[" + values.get(values.size() - 1) + " / " + scheduler.posible() + "]", 
 									values.get(values.size() - 1), scheduler.posible());  
 						break;

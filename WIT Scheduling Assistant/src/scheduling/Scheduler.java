@@ -28,6 +28,8 @@ public class Scheduler {
 			collectClasses.removeAll(preCollectedSections.keySet());
 			
 			for(LookupResult clazz : preCollectedSections.keySet()) {
+				if(!classes.contains(clazz)) continue;
+				
 				ArrayList<Section> collectedSections;
 				options.put(clazz, collectedSections = new ArrayList<>());
 				
