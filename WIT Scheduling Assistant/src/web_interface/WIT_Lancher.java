@@ -1,5 +1,6 @@
 package web_interface;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
@@ -8,6 +9,8 @@ import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.border.LineBorder;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 
@@ -16,7 +19,7 @@ import util.References;
 
 public class WIT_Lancher {
 	public static void main(String[] args) {
-		BufferedImage loadedImage, scaledImage = new BufferedImage(600, 350, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage loadedImage, scaledImage = new BufferedImage(400, 240, BufferedImage.TYPE_INT_ARGB);
 		
 		try { 
 			loadedImage = ImageIO.read(WIT_Lancher.class.getResource("/web_interface/Splash.png"));
@@ -27,6 +30,7 @@ public class WIT_Lancher {
 		
 		
 		final JDialog splashScreen = new JDialog();
+		((JPanel) splashScreen.getContentPane()).setBorder(new LineBorder(Color.BLACK, 1));
 		splashScreen.add(new JLabel(new ImageIcon(scaledImage)));
 		splashScreen.setUndecorated(true);
 		splashScreen.pack();
