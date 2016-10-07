@@ -39,6 +39,8 @@ public class WIT_Lancher {
 		
 		new Thread(() -> {
 			
+//			try {Thread.sleep(10000);} catch(Exception e) {}
+			
 			try(WebClient webClient = WebClientCreater.initWebClient()) {
 				PageLock pages = new PageLock(webClient);
 				Display display = new Display(pages);
