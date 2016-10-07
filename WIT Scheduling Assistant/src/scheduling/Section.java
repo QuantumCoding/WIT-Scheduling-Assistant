@@ -12,7 +12,7 @@ import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
 import pages.wit.LookupResultsPage.LookupResult;
 
 public class Section {
-	private static final boolean DEBUG_ALLOW_NON_REG_CLASS = false;
+	private static final boolean DEBUG_ALLOW_NON_REG_CLASS = true;
 	
 	private LookupResult subject;
 	private String className;
