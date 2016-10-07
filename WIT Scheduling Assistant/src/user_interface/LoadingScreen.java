@@ -2,7 +2,6 @@ package user_interface;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Font;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -10,6 +9,7 @@ import javax.swing.JProgressBar;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
+import util.Fonts;
 import util.References;
 
 public class LoadingScreen extends JPanel {
@@ -37,7 +37,7 @@ public class LoadingScreen extends JPanel {
 		midPanel.add(loadingProgressBar, "cell 0 1,grow");
 		
 		loadingLabel = new JLabel("");
-		loadingLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		loadingLabel.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(loadingLabel, "cell 0 2,alignx center");
 
 		add(midPanel, "cell 1 1,grow");

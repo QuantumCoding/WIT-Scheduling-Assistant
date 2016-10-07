@@ -1,7 +1,6 @@
 package user_interface;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,6 +17,7 @@ import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 import scheduling.Schedule;
+import util.Fonts;
 import util.References;
 import web_interface.PageLock;
 
@@ -51,30 +51,30 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 		midPanel.add(witHeaderLabel, "cell 0 0 4 1,alignx left,aligny top");
 		
 		registerButton = new JButton("Register For Classes");
-		registerButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		registerButton.setFont(Fonts.MEDIUM_LABEL);
 		registerButton.setBackground(Color.WHITE);
 		midPanel.add(registerButton, "cell 0 1,alignx left,aligny bottom");
 		
 		timePreferneceButton = new JButton("Time Preferences");
 		timePreferneceButton.setBackground(Color.WHITE);
-		timePreferneceButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		timePreferneceButton.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(timePreferneceButton, "cell 1 1,alignx left,aligny bottom");
 		
 		viewButton = new JButton("View Schedule");
-		viewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		viewButton.setFont(Fonts.MEDIUM_LABEL);
 		viewButton.setBackground(Color.WHITE);
 		midPanel.add(viewButton, "cell 0 2 2 1,growx,aligny bottom");
 		
 		closeButton = new JButton("Close");
 		closeButton.setBackground(Color.WHITE);
-		closeButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		closeButton.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(closeButton, "cell 3 2,alignx right,aligny bottom");
 		
 		JSeparator separator = new JSeparator();
 		midPanel.add(separator, "cell 0 3 4 1,growx");
 		
 		discriptionLabel = new JLabel("Description:");
-		discriptionLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		discriptionLabel.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(discriptionLabel, "cell 0 4 4 1,alignx left,aligny top");
 
 		postInit();

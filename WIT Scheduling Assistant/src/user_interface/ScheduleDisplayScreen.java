@@ -2,7 +2,6 @@ package user_interface;
 
 import java.awt.Color;
 import java.awt.Desktop;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -27,6 +26,7 @@ import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
 import scheduling.Schedule;
+import util.Fonts;
 import util.References;
 
 public class ScheduleDisplayScreen extends JPanel implements ActionListener {
@@ -66,12 +66,12 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		topPanel.setLayout(new MigLayout("", "[grow][][][20%,right]", "[grow]"));
 		
 		overlayButton = new JCheckBox("<HTML><CENTER>Overlay<BR>Pref.</CENTER></HTML>");
-		overlayButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		overlayButton.setFont(Fonts.STANDARD_LABEL);
 		overlayButton.setBackground(Color.WHITE);
 		topPanel.add(overlayButton, "cell 1 0,aligny bottom");
 		
 		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
-		menuButton.setFont(new Font("Tahoma", Font.BOLD, 14));
+		menuButton.setFont(Fonts.MENU_BUTTON);
 		menuButton.setBackground(Color.WHITE);
 		topPanel.add(menuButton, "cell 2 0,growy");
 		
@@ -83,21 +83,21 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		
 		JLabel witHeaderLabel = new JLabel("Possible Schedules");
 		scheduleControlPanel.add(witHeaderLabel, "cell 0 0 2 1,alignx center,aligny top");
-		witHeaderLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		witHeaderLabel.setFont(Fonts.MEDIUM_LABEL);
 		
 		currentScheduleLabel = new JLabel("[1 / 24]");
-		currentScheduleLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		currentScheduleLabel.setFont(Fonts.STANDARD_LABEL);
 		scheduleControlPanel.add(currentScheduleLabel, "cell 0 1 2 1,alignx center,aligny top");
 		
 		prevButton = new JButton("Prev.");
 		scheduleControlPanel.add(prevButton, "cell 0 2,growx,aligny bottom");
 		prevButton.setBackground(Color.WHITE);
-		prevButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		prevButton.setFont(Fonts.STANDARD_LABEL);
 		
 		nextButton = new JButton("Next");
 		scheduleControlPanel.add(nextButton, "cell 1 2,growx,aligny bottom");
 		nextButton.setBackground(Color.WHITE);
-		nextButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		nextButton.setFont(Fonts.STANDARD_LABEL);
 		
 		JLabel label = new JLabel("");
 		label.setIcon(References.Icon_WIT_Header);
@@ -119,22 +119,22 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		
 		registerButton = new JButton("Register Schedule");
 		registerButton.setBackground(Color.WHITE);
-		registerButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		registerButton.setFont(Fonts.STANDARD_LABEL);
 		optionsPanel.add(registerButton, "cell 0 0,alignx left");
 		registerButton.addActionListener(this);
 		
 		saveImageButton = new JButton("Save Image");
 		saveImageButton.setBackground(Color.WHITE);
-		saveImageButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		saveImageButton.setFont(Fonts.STANDARD_LABEL);
 		optionsPanel.add(saveImageButton, "cell 1 0,alignx right");
 		saveImageButton.addActionListener(this);
 		
 		variantLabel = new JLabel("Variant:");
-		variantLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		variantLabel.setFont(Fonts.MEDIUM_LABEL);
 		optionsPanel.add(variantLabel, "cell 2 0,alignx right");
 		
 		variantComboBox = new JComboBox<>();
-		variantComboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		variantComboBox.setFont(Fonts.STANDARD_LABEL);
 		variantComboBox.setModel(variantComboBoxModel = new DefaultComboBoxModel<>());
 		optionsPanel.add(variantComboBox, "cell 3 0,growx");
 		variantComboBox.addActionListener(this);
@@ -228,7 +228,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			diplayPanel.setLayout(new BoxLayout(diplayPanel, BoxLayout.Y_AXIS));
 			
 			JLabel webLink = new JLabel("<HTML><U><Center>Link to Resistration Page</Center></U></HTML>");
-			webLink.setFont(new Font("Tahoma", Font.PLAIN, 16));
+			webLink.setFont(Fonts.MEDIUM_LABEL);
 			webLink.setForeground(Color.BLUE);
 			
 			webLink.addMouseListener(new MouseAdapter() {
