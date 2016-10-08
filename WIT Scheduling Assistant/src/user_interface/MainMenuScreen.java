@@ -99,14 +99,14 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 		viewButton.addMouseListener(mouseListener);
 		
 		descriptions.put(closeButton, "<HTML>"
-			+ "<h1>Close</h1>"
+			+ "<B><font size=+2>Close </font></B>"
 			+ "<p>"
 				+ "\tLogout and then Closes the Application"
 			+ "</p>"
 			+ "</HTML>");
 		
 		descriptions.put(viewButton, "<HTML>"
-			+ "<h1>View Schedule</h1>"
+			+ "<B><font size=+2>View Schedule </font></B>"
 			+ "<p>"
 				+ "Diplasys the User's Current Schedule graphicly"
 			+ "<p>"
@@ -115,14 +115,14 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 			+ "</HTML>");
 		
 		descriptions.put(timePreferneceButton, "<HTML>"
-			+ "<h1>Configure Time Preferences </h1>"
+			+ "<B><font size=+2>Configure Time Preferences </font></B>"
 			+ "<p>"
 				+ "Allows the User to specify which Periods of Time they Prefer to have Classes"
 			+ "<p>"
 				+ "The programe will use this Information to present the Best posible Schedules"
-			+ "<h2><BR>"
+			+ "<BR><BR><B><font size=+1>"
 				+ "To use this Tool:"
-			+ "</h2>"
+			+ " </font></B><BR>"
 				+ "Move the Preference Slider to the Correct Color"
 			+ "<p>"
 				+ "Then Select Areas of the Scedule to fill, by <B>LEFT</B> Clicking and Dragging"
@@ -134,7 +134,7 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 			+ "</HTML>");
 		
 		descriptions.put(registerButton, "<HTML>"
-			+ "<h1>Register For Classes</h1>"
+			+ "<B><font size=+2>Register For Classes </font></B>"
 			+ "<p>"
 				+ "Allows the User to select classes from database"
 			+ "<p>"

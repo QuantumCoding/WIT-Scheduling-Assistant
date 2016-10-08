@@ -30,6 +30,7 @@ public class ScheduleView extends JScrollPane {
 			private static final long serialVersionUID = 4796041366087900724L;
 			public void paintComponent(Graphics g) { super.paintComponent(g); paintSchedule(g); }
 		};
+		
 		scheduleDisplay.setBackground(Color.WHITE);
 		Dimension displaySize = new Dimension(RESOLUTION_XP, RESOLUTION_YP);
 		scheduleDisplay.setPreferredSize(displaySize);

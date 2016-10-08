@@ -49,7 +49,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		topPanel.add(scheduleControlPanel, "flowx,cell 1 0,alignx left,growy");
 		scheduleControlPanel.setLayout(new MigLayout("", "[grow][][]", "[]"));
 		
-		JLabel instructionLabel = new JLabel("<HTML>\r\n\t<h2>Instructions</h2>\r\n\tUse this page to set a Preference of when your Classes are\r\n\t<BR>\r\n\tEx. If you Prefer Morning Classes, then make the Earlier hours Green\r\n</HTML>");
+		JLabel instructionLabel = new JLabel("<HTML>\t<B><font size=+1>Instructions</font></B><BR>\r\n\tUse this page to set a Preference of when your Classes are\r\n\t<BR>\r\n\tEx. If you Prefer Morning Classes, then make the Earlier hours Green\r\n</HTML>");
 		instructionLabel.setFont(Fonts.STANDARD_LABEL);
 		scheduleControlPanel.add(instructionLabel, "cell 0 0");
 		
@@ -57,7 +57,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		separator.setOrientation(SwingConstants.VERTICAL);
 		scheduleControlPanel.add(separator, "cell 1 0,alignx center,growy");
 		
-		JLabel controlLabel = new JLabel("<HTML>\r\n<h2>Controls</h2>\r\n\tLeft Click and Drag to Change an area\r\n<BR>\r\n\tRight Click and Drag to Reset an area\r\n<BR>\r\n\tUse the Slider to select a Preference\r\n</HTML>");
+		JLabel controlLabel = new JLabel("<HTML><B><font size=+>Controls</font></B><BR>\tLeft Click and Drag to Change an area<BR>\tRight Click and Drag to Reset an area<BR>\tUse the Slider to select a Preference</HTML>");
 		controlLabel.setFont(Fonts.STANDARD_LABEL);
 		scheduleControlPanel.add(controlLabel, "cell 2 0,alignx right,aligny top");
 		
@@ -93,6 +93,11 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		valueSlider.setPaintTicks(true);
 		valueSlider.setMajorTickSpacing(1);
 		valueSlider.setBackground(Color.WHITE);
+		Dimension preferred = valueSlider.getPreferredSize();
+		valueSlider.setPreferredSize(new Dimension(
+				(int) (preferred.width * Fonts.LENGTH_SCALE), 
+				(int) (preferred.height * Fonts.LENGTH_SCALE))
+			);
 		optionsPanel.add(valueSlider, "cell 1 0,growx");
 		
 		JLabel bestLabel = new JLabel("Best");
