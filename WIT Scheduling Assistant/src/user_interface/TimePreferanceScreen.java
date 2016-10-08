@@ -49,7 +49,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		topPanel.add(scheduleControlPanel, "flowx,cell 1 0,alignx left,growy");
 		scheduleControlPanel.setLayout(new MigLayout("", "[grow][][]", "[]"));
 		
-		JLabel instructionLabel = new JLabel("<HTML>\t<B><font size=+1>Instructions</font></B><BR>\r\n\tUse this page to set a Preference of when your Classes are\r\n\t<BR>\r\n\tEx. If you Prefer Morning Classes, then make the Earlier hours Green\r\n</HTML>");
+		JLabel instructionLabel = new JLabel("<HTML>\t<B><font size=+>Instructions</font></B><BR>\r\n\tUse this page to set a Preference of when your Classes are\r\n\t<BR>\r\n\tEx. If you Prefer Morning Classes, then make the Earlier hours Green\r\n</HTML>");
 		instructionLabel.setFont(Fonts.STANDARD_LABEL);
 		scheduleControlPanel.add(instructionLabel, "cell 0 0");
 		

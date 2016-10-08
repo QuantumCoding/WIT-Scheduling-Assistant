@@ -1,6 +1,7 @@
 package user_interface;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
@@ -235,6 +236,13 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 				}
 			}
 		});
+		
+		Dimension baseSize = classesList.getPreferredSize();
+		Dimension largerSize = new Dimension(
+				(int) (baseSize.width  * Fonts.LENGTH_SCALE),
+				(int) (baseSize.height * Fonts.HEIGHT_SCALE));
+		classesList.setPreferredSize(largerSize);
+		limitSectionsList.setPreferredSize(largerSize);
 	}
 
 	public void actionPerformed(ActionEvent e) {
