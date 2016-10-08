@@ -237,13 +237,6 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 				}
 			}
 		});
-		
-		Dimension baseSize = classesList.getPreferredSize();
-		Dimension largerSize = new Dimension(
-				(int) (baseSize.width  * Fonts.LENGTH_SCALE),
-				(int) (baseSize.height * Fonts.HEIGHT_SCALE));
-		classesList.setPreferredSize(largerSize);
-		limitSectionsList.setPreferredSize(largerSize);
 	}
 
 	public void actionPerformed(ActionEvent e) {

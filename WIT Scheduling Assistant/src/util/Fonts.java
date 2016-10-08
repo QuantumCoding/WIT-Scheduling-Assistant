@@ -17,8 +17,6 @@ public class Fonts {
 		GraphicsDevice gd = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice();
 		LENGTH_SCALE = (double) gd.getDisplayMode().getWidth() / 1366.0;
 		HEIGHT_SCALE = (double) gd.getDisplayMode().getHeight() / 768.0;
-		
-		System.out.println(LENGTH_SCALE + ", " + HEIGHT_SCALE);
 	}
 	
 	public static final Font TINY_LABEL = calc(new Font("Tahoma", Font.PLAIN, 12));
@@ -52,6 +50,10 @@ public class Fonts {
 				return testFont;
 			}
 		}
+		
+		Font testFont = new Font(normal.getFamily(), normal.getStyle(), fontSize);
+		FontMetrics testMetrics = CALC_GRAPHICS_CONTEXT.getFontMetrics(testFont);
+		if(testMetrics.getHeight() > targetHeight) fontSize --;
 		
 		return new Font(normal.getFamily(), normal.getStyle(), fontSize);
 	}
