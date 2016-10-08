@@ -2,7 +2,6 @@ package user_interface;
 
 import java.awt.Color;
 import java.awt.Cursor;
-import java.awt.Dimension;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -27,7 +26,7 @@ public class LoadingScreen extends JPanel {
 		JPanel midPanel = new JPanel();
 		midPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		midPanel.setBackground(Color.WHITE);
-		midPanel.setLayout(new MigLayout("", "[grow]", "[grow][25px][][grow]"));
+		midPanel.setLayout(new MigLayout("", "[grow]", "[grow][" + (25 * Fonts.HEIGHT_SCALE) + "px][][grow]"));
 		
 		loginWitHeader = new JLabel("");
 		loginWitHeader.setIcon(References.Icon_WIT_Header);
@@ -35,11 +34,6 @@ public class LoadingScreen extends JPanel {
 		
 		loadingProgressBar = new JProgressBar();
 		loadingProgressBar.setIndeterminate(true);
-		Dimension preferred = loadingProgressBar.getPreferredSize();
-		loadingProgressBar.setPreferredSize(new Dimension(
-				(int) (preferred.width * Fonts.LENGTH_SCALE), 
-				(int) (preferred.height * Fonts.LENGTH_SCALE))
-			);
 		midPanel.add(loadingProgressBar, "cell 0 1,grow");
 		
 		loadingLabel = new JLabel("");

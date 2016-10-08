@@ -86,6 +86,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel limitSectionLabePanel = new JPanel();
 		limitSectionLabePanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		limitSectionLabePanel.setBackground(new Color(250, 250, 250));
+		limitSectionLabePanel.setPreferredSize(new Dimension(References.Icon_WIT_Header.getIconWidth(), 10));
 		rightPanel.add(limitSectionLabePanel, "cell 0 0,grow");
 		
 		JLabel limitSectionLabel = new JLabel("Limit Sections");
