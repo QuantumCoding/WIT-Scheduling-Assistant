@@ -168,7 +168,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		subjectPanel.add(subjectScrollPane, "cell 0 1,grow");
 		
 		classSelectList = new JList<>();
-		classSelectList.setFixedCellHeight(25);
+		classSelectList.setFixedCellHeight((int) (25 * Fonts.HEIGHT_SCALE));
 		classSelectList.setVisibleRowCount(16);
 		classSelectList.setFont(Fonts.STANDARD_LABEL);
 		classSelectList.setBackground(SystemColor.menu);
