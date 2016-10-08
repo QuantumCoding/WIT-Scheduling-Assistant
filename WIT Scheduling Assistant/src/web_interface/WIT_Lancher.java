@@ -15,11 +15,13 @@ import javax.swing.border.LineBorder;
 import com.gargoylesoftware.htmlunit.WebClient;
 
 import user_interface.Display;
+import util.Fonts;
 import util.References;
 
 public class WIT_Lancher {
 	public static void main(String[] args) {
-		BufferedImage loadedImage, scaledImage = new BufferedImage(400, 240, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage loadedImage, scaledImage = new BufferedImage(
+				(int) (400 * Fonts.LENGTH_SCALE), (int) (240 * Fonts.HEIGHT_SCALE), BufferedImage.TYPE_INT_ARGB);
 		
 		try { 
 			loadedImage = ImageIO.read(WIT_Lancher.class.getResource("/web_interface/Splash.png"));

@@ -93,6 +93,7 @@ public class LoginScreen extends JPanel implements ActionListener {
 		
 		rememberMeCheckBox = new JCheckBox("Remember Me");
 		rememberMeCheckBox.setBackground(Color.WHITE);
+		rememberMeCheckBox.setFont(Fonts.TINY_LABEL);
 		loginPanel.add(rememberMeCheckBox, "cell 2 4,alignx right,aligny top");
 		rememberMeCheckBox.setHorizontalAlignment(SwingConstants.TRAILING);
 		
