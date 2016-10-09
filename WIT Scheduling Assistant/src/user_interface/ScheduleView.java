@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import scheduling.Schedule;
+import util.Fonts;
 
 public class ScheduleView extends JScrollPane {
 	private static final long serialVersionUID = 883594012378077662L;
@@ -16,15 +17,22 @@ public class ScheduleView extends JScrollPane {
 	private JPanel scheduleDisplay;
 	private int variant;
 	
+	private static final int RESOLUTION_XP = (int) (ScheduleImage.RESOLUTION_XP * Fonts.LENGTH_SCALE);
+	private static final int RESOLUTION_YP = (int) (ScheduleImage.RESOLUTION_YP * Fonts.HEIGHT_SCALE);
+
+	private static final int LABELS_LENGTH = (int) (ScheduleImage.LABELS_LENGTH * Fonts.LENGTH_SCALE);
+	private static final int HEADER_HEIGHT = (int) (ScheduleImage.HEADER_HEIGHT * Fonts.HEIGHT_SCALE);
+	
 	public ScheduleView(Schedule schedule) {
-		getVerticalScrollBar().setUnitIncrement(ScheduleImage.RESOLUTION_YP / 72);
+		getVerticalScrollBar().setUnitIncrement(RESOLUTION_YP / 72);
 		
 		scheduleDisplay = new JPanel() {
 			private static final long serialVersionUID = 4796041366087900724L;
 			public void paintComponent(Graphics g) { super.paintComponent(g); paintSchedule(g); }
 		};
+		
 		scheduleDisplay.setBackground(Color.WHITE);
-		Dimension displaySize = new Dimension(ScheduleImage.RESOLUTION_XP, ScheduleImage.RESOLUTION_YP);
+		Dimension displaySize = new Dimension(RESOLUTION_XP, RESOLUTION_YP);
 		scheduleDisplay.setPreferredSize(displaySize);
 		setViewportView(scheduleDisplay);
 		
@@ -32,11 +40,11 @@ public class ScheduleView extends JScrollPane {
 			private static final long serialVersionUID = 7848856260287365290L;
 			public void paintComponent(Graphics g) { 
 				super.paintComponent(g); 
-				g.drawImage(ScheduleImage.weekHeader, 0, 0, ScheduleImage.RESOLUTION_XP, ScheduleImage.HEADER_HEIGHT, null);
+				g.drawImage(ScheduleImage.weekHeader, 0, 0, RESOLUTION_XP, HEADER_HEIGHT, null);
 			}
 		};
 
-		Dimension headerSize = new Dimension(ScheduleImage.RESOLUTION_XP, ScheduleImage.HEADER_HEIGHT);
+		Dimension headerSize = new Dimension(RESOLUTION_XP, HEADER_HEIGHT);
 		headerPanel.setPreferredSize(headerSize);
 		setColumnHeaderView(headerPanel);
 		
@@ -44,11 +52,11 @@ public class ScheduleView extends JScrollPane {
 			private static final long serialVersionUID = 9199066327137139730L;
 			public void paintComponent(Graphics g) { 
 				super.paintComponent(g); 
-				g.drawImage(ScheduleImage.timeLabels, 0, 0, ScheduleImage.LABELS_LENGTH, ScheduleImage.RESOLUTION_YP, null);
+				g.drawImage(ScheduleImage.timeLabels, 0, 0, LABELS_LENGTH, RESOLUTION_YP, null);
 			}
 		};
 
-		Dimension labeSize = new Dimension(ScheduleImage.LABELS_LENGTH, ScheduleImage.RESOLUTION_YP);
+		Dimension labeSize = new Dimension(LABELS_LENGTH, RESOLUTION_YP);
 		labelPanel.setPreferredSize(labeSize);
 		setRowHeaderView(labelPanel);
 		
@@ -56,7 +64,7 @@ public class ScheduleView extends JScrollPane {
 	}
 	
 	private void paintSchedule(Graphics g) {
-		g.drawImage(scheduleImage, 0, 0, ScheduleImage.RESOLUTION_XP, ScheduleImage.RESOLUTION_YP, null);
+		g.drawImage(scheduleImage, 0, 0, RESOLUTION_XP, RESOLUTION_YP, null);
 	}
 	
 	public void setShadingModel(Color[][][] shadingModel) {

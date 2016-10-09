@@ -2,23 +2,23 @@ package user_interface;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JSlider;
+import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
+import util.Fonts;
 import util.References;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
 
 public class TimePreferanceScreen extends JPanel implements ActionListener, ChangeListener {
 	private static final long serialVersionUID = 1333461675067105743L;
@@ -49,16 +49,16 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		topPanel.add(scheduleControlPanel, "flowx,cell 1 0,alignx left,growy");
 		scheduleControlPanel.setLayout(new MigLayout("", "[grow][][]", "[]"));
 		
-		JLabel instructionLabel = new JLabel("<HTML>\r\n\t<h2>Instructions</h2>\r\n\tUse this page to set a Preference of when your Classes are\r\n\t<BR>\r\n\tEx. If you Prefer Morning Classes, then make the Earlier hours Green\r\n</HTML>");
-		instructionLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JLabel instructionLabel = new JLabel("<HTML>\t<B><font size=+>Instructions</font></B><BR>\r\n\tUse this page to set a Preference of when your Classes are\r\n\t<BR>\r\n\tEx. If you Prefer Morning Classes, then make the Earlier hours Green\r\n</HTML>");
+		instructionLabel.setFont(Fonts.STANDARD_LABEL);
 		scheduleControlPanel.add(instructionLabel, "cell 0 0");
 		
 		JSeparator separator = new JSeparator();
 		separator.setOrientation(SwingConstants.VERTICAL);
 		scheduleControlPanel.add(separator, "cell 1 0,alignx center,growy");
 		
-		JLabel controlLabel = new JLabel("<HTML>\r\n<h2>Controls</h2>\r\n\tLeft Click and Drag to Change an area\r\n<BR>\r\n\tRight Click and Drag to Reset an area\r\n<BR>\r\n\tUse the Slider to select a Preference\r\n</HTML>");
-		controlLabel.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		JLabel controlLabel = new JLabel("<HTML><B><font size=+>Controls</font></B><BR>\tLeft Click and Drag to Change an area<BR>\tRight Click and Drag to Reset an area<BR>\tUse the Slider to select a Preference</HTML>");
+		controlLabel.setFont(Fonts.STANDARD_LABEL);
 		scheduleControlPanel.add(controlLabel, "cell 2 0,alignx right,aligny top");
 		
 		JLabel label = new JLabel("");
@@ -67,7 +67,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		topPanel.add(label, "cell 0 0,alignx left,aligny center");
 		
 		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
-		menuButton.setFont(new Font("Tahoma", Font.BOLD, 14));
+		menuButton.setFont(Fonts.STANDARD_LABEL);
 		menuButton.setBackground(Color.WHITE);
 		topPanel.add(menuButton, "cell 2 0,alignx center,growy");
 		
@@ -83,7 +83,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		optionsPanel.setLayout(new MigLayout("", "[][][][50px][grow]", "[]"));
 		
 		JLabel worstLabel = new JLabel("Worst");
-		worstLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		worstLabel.setFont(Fonts.MEDIUM_LABEL);
 		optionsPanel.add(worstLabel, "cell 0 0,alignx right,aligny center");
 		
 		valueSlider = new JSlider();
@@ -93,10 +93,15 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		valueSlider.setPaintTicks(true);
 		valueSlider.setMajorTickSpacing(1);
 		valueSlider.setBackground(Color.WHITE);
+		Dimension preferred = valueSlider.getPreferredSize();
+		valueSlider.setPreferredSize(new Dimension(
+				(int) (preferred.width * Fonts.LENGTH_SCALE), 
+				(int) (preferred.height * Fonts.LENGTH_SCALE))
+			);
 		optionsPanel.add(valueSlider, "cell 1 0,growx");
 		
 		JLabel bestLabel = new JLabel("Best");
-		bestLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		bestLabel.setFont(Fonts.MEDIUM_LABEL);
 		optionsPanel.add(bestLabel, "cell 2 0,alignx left,aligny center");
 		
 		samplePanel = new JPanel();
@@ -105,7 +110,7 @@ public class TimePreferanceScreen extends JPanel implements ActionListener, Chan
 		optionsPanel.add(samplePanel, "cell 3 0,alignx center,aligny center");
 		
 		resetButton = new JButton("Reset");
-		resetButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		resetButton.setFont(Fonts.STANDARD_LABEL);
 		resetButton.setBackground(Color.WHITE);
 		optionsPanel.add(resetButton, "cell 4 0,alignx right");
 		resetButton.addActionListener(this);

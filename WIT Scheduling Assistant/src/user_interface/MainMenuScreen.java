@@ -1,7 +1,6 @@
 package user_interface;
 
 import java.awt.Color;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -18,6 +17,7 @@ import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
 import scheduling.Schedule;
+import util.Fonts;
 import util.References;
 import web_interface.PageLock;
 
@@ -51,30 +51,30 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 		midPanel.add(witHeaderLabel, "cell 0 0 4 1,alignx left,aligny top");
 		
 		registerButton = new JButton("Register For Classes");
-		registerButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		registerButton.setFont(Fonts.MEDIUM_LABEL);
 		registerButton.setBackground(Color.WHITE);
 		midPanel.add(registerButton, "cell 0 1,alignx left,aligny bottom");
 		
 		timePreferneceButton = new JButton("Time Preferences");
 		timePreferneceButton.setBackground(Color.WHITE);
-		timePreferneceButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		timePreferneceButton.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(timePreferneceButton, "cell 1 1,alignx left,aligny bottom");
 		
 		viewButton = new JButton("View Schedule");
-		viewButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		viewButton.setFont(Fonts.MEDIUM_LABEL);
 		viewButton.setBackground(Color.WHITE);
 		midPanel.add(viewButton, "cell 0 2 2 1,growx,aligny bottom");
 		
 		closeButton = new JButton("Close");
 		closeButton.setBackground(Color.WHITE);
-		closeButton.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		closeButton.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(closeButton, "cell 3 2,alignx right,aligny bottom");
 		
 		JSeparator separator = new JSeparator();
 		midPanel.add(separator, "cell 0 3 4 1,growx");
 		
 		discriptionLabel = new JLabel("Description:");
-		discriptionLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		discriptionLabel.setFont(Fonts.MEDIUM_LABEL);
 		midPanel.add(discriptionLabel, "cell 0 4 4 1,alignx left,aligny top");
 
 		postInit();
@@ -99,14 +99,14 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 		viewButton.addMouseListener(mouseListener);
 		
 		descriptions.put(closeButton, "<HTML>"
-			+ "<h1>Close</h1>"
+			+ "<B><font size=++>Close </font></B>"
 			+ "<p>"
 				+ "\tLogout and then Closes the Application"
 			+ "</p>"
 			+ "</HTML>");
 		
 		descriptions.put(viewButton, "<HTML>"
-			+ "<h1>View Schedule</h1>"
+			+ "<B><font size=++>View Schedule </font></B>"
 			+ "<p>"
 				+ "Diplasys the User's Current Schedule graphicly"
 			+ "<p>"
@@ -115,14 +115,14 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 			+ "</HTML>");
 		
 		descriptions.put(timePreferneceButton, "<HTML>"
-			+ "<h1>Configure Time Preferences </h1>"
+			+ "<B><font size=++>Configure Time Preferences </font></B>"
 			+ "<p>"
 				+ "Allows the User to specify which Periods of Time they Prefer to have Classes"
 			+ "<p>"
 				+ "The programe will use this Information to present the Best posible Schedules"
-			+ "<h2><BR>"
+			+ "<BR><BR><B><font size=+>"
 				+ "To use this Tool:"
-			+ "</h2>"
+			+ " </font></B><BR>"
 				+ "Move the Preference Slider to the Correct Color"
 			+ "<p>"
 				+ "Then Select Areas of the Scedule to fill, by <B>LEFT</B> Clicking and Dragging"
@@ -134,7 +134,7 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 			+ "</HTML>");
 		
 		descriptions.put(registerButton, "<HTML>"
-			+ "<h1>Register For Classes</h1>"
+			+ "<B><font size=++>Register For Classes </font></B>"
 			+ "<p>"
 				+ "Allows the User to select classes from database"
 			+ "<p>"

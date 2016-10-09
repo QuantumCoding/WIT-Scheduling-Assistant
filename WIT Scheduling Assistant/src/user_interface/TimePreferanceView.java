@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
 import scheduling.Period.WeekDay;
+import util.Fonts;
 import util.References;
 
 public class TimePreferanceView extends JScrollPane implements MouseMotionListener, MouseListener {
@@ -26,15 +27,24 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	private ScheduleImage scheduleImage;
 	private JPanel scheduleDisplay;
 	
+	private static final int RESOLUTION_X = (int) (ScheduleImage.RESOLUTION_X * Fonts.LENGTH_SCALE);
+	private static final int RESOLUTION_Y = (int) (ScheduleImage.RESOLUTION_Y * Fonts.HEIGHT_SCALE);
+
+	private static final int RESOLUTION_XP = (int) (ScheduleImage.RESOLUTION_XP * Fonts.LENGTH_SCALE);
+	private static final int RESOLUTION_YP = (int) (ScheduleImage.RESOLUTION_YP * Fonts.HEIGHT_SCALE);
+
+	private static final int LABELS_LENGTH = (int) (ScheduleImage.LABELS_LENGTH * Fonts.LENGTH_SCALE);
+	private static final int HEADER_HEIGHT = (int) (ScheduleImage.HEADER_HEIGHT * Fonts.HEIGHT_SCALE);
+	
 	public TimePreferanceView() {
-		getVerticalScrollBar().setUnitIncrement(ScheduleImage.RESOLUTION_YP / 72);
+		getVerticalScrollBar().setUnitIncrement(RESOLUTION_YP / 72);
 		
 		scheduleDisplay = new JPanel() {
 			private static final long serialVersionUID = 4796041366087900724L;
 			public void paintComponent(Graphics g) { super.paintComponent(g); paintSchedule(g); }
 		};
 		scheduleDisplay.setBackground(Color.WHITE);
-		Dimension displaySize = new Dimension(ScheduleImage.RESOLUTION_XP, ScheduleImage.RESOLUTION_YP);
+		Dimension displaySize = new Dimension(RESOLUTION_XP, RESOLUTION_YP);
 		scheduleDisplay.setPreferredSize(displaySize);
 		setViewportView(scheduleDisplay);
 		
@@ -42,11 +52,11 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 			private static final long serialVersionUID = 7848856260287365290L;
 			public void paintComponent(Graphics g) { 
 				super.paintComponent(g); 
-				g.drawImage(ScheduleImage.weekHeader, 0, 0, ScheduleImage.RESOLUTION_XP, ScheduleImage.HEADER_HEIGHT, null);
+				g.drawImage(ScheduleImage.weekHeader, 0, 0, RESOLUTION_XP, HEADER_HEIGHT, null);
 			}
 		};
 
-		Dimension headerSize = new Dimension(ScheduleImage.RESOLUTION_XP, ScheduleImage.HEADER_HEIGHT);
+		Dimension headerSize = new Dimension(RESOLUTION_XP, HEADER_HEIGHT);
 		headerPanel.setPreferredSize(headerSize);
 		setColumnHeaderView(headerPanel);
 		
@@ -54,11 +64,11 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 			private static final long serialVersionUID = 9199066327137139730L;
 			public void paintComponent(Graphics g) { 
 				super.paintComponent(g); 
-				g.drawImage(ScheduleImage.timeLabels, 0, 0, ScheduleImage.LABELS_LENGTH, ScheduleImage.RESOLUTION_YP, null);
+				g.drawImage(ScheduleImage.timeLabels, 0, 0, LABELS_LENGTH, RESOLUTION_YP, null);
 			}
 		};
 
-		Dimension labeSize = new Dimension(ScheduleImage.LABELS_LENGTH, ScheduleImage.RESOLUTION_YP);
+		Dimension labeSize = new Dimension(LABELS_LENGTH, RESOLUTION_YP);
 		labelPanel.setPreferredSize(labeSize);
 		setRowHeaderView(labelPanel);
 		
@@ -67,7 +77,7 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	}
 	
 	private void paintSchedule(Graphics g) {
-		g.drawImage(scheduleImage, 0, 0, ScheduleImage.RESOLUTION_XP, ScheduleImage.RESOLUTION_YP, null);
+		g.drawImage(scheduleImage, 0, 0, RESOLUTION_XP, RESOLUTION_YP, null);
 	}
 
 	public void changeSchedule() {
@@ -142,8 +152,8 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 		int xLimit = WeekDay.values().length;
 		int yLimit = ScheduleImage.TIME_DURATION_HOURS * 60 / ScheduleImage.TIME_RESOLUTION;
 		
-		int cellX = (int) (point.getX() / ScheduleImage.RESOLUTION_X * xLimit);
-		int cellY = (int) (point.getY() / ScheduleImage.RESOLUTION_Y * yLimit); 
+		int cellX = (int) (point.getX() / RESOLUTION_X * xLimit);
+		int cellY = (int) (point.getY() / RESOLUTION_Y * yLimit); 
 		
 		cellX = cellX < 0 ? 0 : cellX;
 		cellY = cellY < 0 ? 0 : cellY;

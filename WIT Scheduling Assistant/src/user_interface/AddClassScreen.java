@@ -1,8 +1,8 @@
 package user_interface;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +35,7 @@ import net.miginfocom.swing.MigLayout;
 import pages.wit.LookupResultsPage.LookupResult;
 import scheduling.Section;
 import util.Choise;
+import util.Fonts;
 import util.References;
 import web_interface.PageLock;
 
@@ -85,10 +86,11 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel limitSectionLabePanel = new JPanel();
 		limitSectionLabePanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		limitSectionLabePanel.setBackground(new Color(250, 250, 250));
+		limitSectionLabePanel.setPreferredSize(new Dimension(References.Icon_WIT_Header.getIconWidth(), 10));
 		rightPanel.add(limitSectionLabePanel, "cell 0 0,grow");
 		
 		JLabel limitSectionLabel = new JLabel("Limit Sections");
-		limitSectionLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		limitSectionLabel.setFont(Fonts.MEDIUM_LABEL);
 		limitSectionLabePanel.add(limitSectionLabel);
 		
 		JScrollPane limitSectionsScrollPane = new JScrollPane();
@@ -107,7 +109,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		
 		JLabel classesLabel = new JLabel("Classes");
 		classesLabelPanel.add(classesLabel);
-		classesLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		classesLabel.setFont(Fonts.MEDIUM_LABEL);
 		
 		JScrollPane classesScrollPane = new JScrollPane();
 		rightPanel.add(classesScrollPane, "cell 0 3,grow");
@@ -115,7 +117,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		
 		classesList = new JList<>();
 		classesList.setBackground(SystemColor.menu);
-		classesList.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		classesList.setFont(Fonts.STANDARD_LABEL);
 		classesList.setModel(classesListModel = new DefaultListModel<>());
 		classesScrollPane.setViewportView(classesList);
 		
@@ -128,12 +130,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		termPanel.setLayout(new MigLayout("insets 3px", "[][]", "[]"));
 		
 		JLabel termLabel = new JLabel("Select Term: ");
-		termLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		termLabel.setFont(Fonts.MEDIUM_LABEL);
 		termPanel.add(termLabel, "cell 0 0,alignx right,aligny center");
 		
 		termComboBox = new JComboBox<>();
 		termComboBox.setModel(new DefaultComboBoxModel<>(pages.getTerms().toArray(new Choise[pages.getTerms().size()])));
-		termComboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		termComboBox.setFont(Fonts.STANDARD_LABEL);
 		termPanel.add(termComboBox, "cell 1 0,growx,aligny top");
 		
 		JPanel dividerPanel = new JPanel();
@@ -155,12 +157,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		subjectSelectPanel.setLayout(new MigLayout("insets 0px", "[63px][grow]", "[23px]"));
 		
 		JLabel subjectLabel = new JLabel("Subject: ");
-		subjectLabel.setFont(new Font("Tahoma", Font.PLAIN, 16));
+		subjectLabel.setFont(Fonts.MEDIUM_LABEL);
 		subjectSelectPanel.add(subjectLabel, "cell 0 0,alignx right,aligny center");
 		
 		subjectComboBox = new JComboBox<>();
 		subjectComboBox.setMaximumRowCount(10);
-		subjectComboBox.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		subjectComboBox.setFont(Fonts.STANDARD_LABEL);
 		subjectComboBox.setModel(subjectComboBoxModel = new DefaultComboBoxModel<>());
 		subjectSelectPanel.add(subjectComboBox, "cell 1 0,growx,aligny top");
 		
@@ -168,9 +170,9 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		subjectPanel.add(subjectScrollPane, "cell 0 1,grow");
 		
 		classSelectList = new JList<>();
-		classSelectList.setFixedCellHeight(25);
+		classSelectList.setFixedCellHeight((int) (25 * Fonts.HEIGHT_SCALE));
 		classSelectList.setVisibleRowCount(16);
-		classSelectList.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		classSelectList.setFont(Fonts.STANDARD_LABEL);
 		classSelectList.setBackground(SystemColor.menu);
 		classSelectList.setModel(classSelectListModel = new DefaultListModel<>());
 		classSelectList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -184,12 +186,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		
 		addButton = new JButton("Add Class");
 		addButton.setBackground(Color.WHITE);
-		addButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		addButton.setFont(Fonts.STANDARD_LABEL);
 		addPanel.add(addButton, "cell 0 0");
 		
 		submitButton = new JButton("Create Schedule");
 		submitButton.setBackground(Color.WHITE);
-		submitButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		submitButton.setFont(Fonts.STANDARD_LABEL);
 		addPanel.add(submitButton, "cell 1 0,alignx right");
 		
 		JPanel removePanel = new JPanel();
@@ -200,12 +202,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		
 		removeButton = new JButton("Remove");
 		removeButton.setBackground(Color.WHITE);
-		removeButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		removeButton.setFont(Fonts.STANDARD_LABEL);
 		removePanel.add(removeButton, "cell 0 0,grow");
 		
 		clearButton = new JButton("Clear");
 		clearButton.setBackground(Color.WHITE);
-		clearButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		clearButton.setFont(Fonts.STANDARD_LABEL);
 		removePanel.add(clearButton, "cell 1 0,grow");
 		
 		addButton.addActionListener(this);
@@ -374,7 +376,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 								section.getCourseNumber() + "  " + section.getInstructor());
 						
 						valid.setActionCommand("invalidate" + "|" + section.getSectionId());
-						valid.setFont(new Font("Tahoma", Font.PLAIN, 14));
+						valid.setFont(Fonts.STANDARD_LABEL);
 						valid.addActionListener(AddClassScreen.this);
 						valid.setSelected(markings.get(i));
 						valid.setName(i ++ + "");

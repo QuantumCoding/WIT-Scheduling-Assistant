@@ -1,5 +1,7 @@
 package util;
 
+import java.awt.Graphics;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
@@ -14,7 +16,6 @@ public class References {
 		
 	public static final String Lookup_Result_Form = "/SSBPROD/bwskfcls.P_GetCrse";
 	public static final String Lookup_Result_Select = "SUB_BTN";
-	
 	
 // ----------------------------------------------- Subject ----------------------------------------------------------- \\	
 	
@@ -82,9 +83,19 @@ public class References {
 
 // ----------------------------------------------- Images ----------------------------------------------------------- \\
 	public static ImageIcon Icon_WIT_Header = null;
-	static { 
+	static { // * Fonts.LENGTH_SCALE
 		 try {
-			Icon_WIT_Header = new ImageIcon(ImageIO.read(Display.class.getResource("witHeader.gif")));
+			 BufferedImage loadedImage = ImageIO.read(Display.class.getResource("witHeader.gif"));
+			 BufferedImage scaledImage = new BufferedImage(
+						(int) (loadedImage.getWidth()  * Fonts.LENGTH_SCALE), 
+						(int) (loadedImage.getHeight() * Fonts.HEIGHT_SCALE), 
+					BufferedImage.TYPE_INT_ARGB);
+			 
+			 Graphics g = scaledImage.getGraphics();
+			 g.drawImage(loadedImage, 0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null);
+			 g.dispose();
+			 
+			 Icon_WIT_Header = new ImageIcon(scaledImage);
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
