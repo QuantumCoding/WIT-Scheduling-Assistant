@@ -2,6 +2,11 @@ package user_interface;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.security.KeyStoreException;
@@ -13,6 +18,7 @@ import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingWorker;
 import javax.swing.UIManager;
@@ -78,6 +84,44 @@ public class Display extends JFrame {
 		pack();
 		setLocationRelativeTo(null);
 		setVisible(true);
+		
+		KeyListener debugToggle = new KeyAdapter() {
+			private boolean shift, control, trigger;
+			
+			public void keyReleased(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_SHIFT)
+					shift = false;
+				else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
+					control = false;
+			}
+			
+			public void keyPressed(KeyEvent e) {
+				if(e.getKeyCode() == KeyEvent.VK_SHIFT)
+					shift = true;
+				else if(e.getKeyCode() == KeyEvent.VK_CONTROL)
+					control = true;
+				else if(shift && control && !trigger && e.getKeyCode() == KeyEvent.VK_D) {
+					boolean state = Section.DEBUG_ALLOW_NON_REG_CLASS;
+					
+					Section.DEBUG_ALLOW_NON_REG_CLASS = JOptionPane.showConfirmDialog(Display.this, "Are you sure you want to " + 
+							(!state ? "Enable" : "Disable") + " DEBUG mode?") == JOptionPane.YES_OPTION ? !state : state;
+					
+					trigger = true;
+				} else trigger = false;
+			}
+		};
+		
+		addToAll(this, debugToggle);
+	}
+	
+	private void addToAll(Container container, KeyListener listener) {
+		for(Component comp : container.getComponents()) {
+			if(comp == null) continue;
+			if(comp instanceof Container)
+				addToAll((Container) comp, listener);
+			
+			comp.addKeyListener(listener);
+		}
 	}
 	
 	public void switchToClassAdder() {

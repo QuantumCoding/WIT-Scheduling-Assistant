@@ -103,6 +103,7 @@ public class PageLock {
 			
 			if(changeTerm) {
 				termPage.changeTerm(newTerm);
+				subjectPage = new SubjectPage();
 //				registerPage = new RegisterPage();
 				changeTerm = false;
 			}

@@ -251,6 +251,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			for(Integer classId : schedules.get(selectedIndex).getClassIds((Integer) variantComboBox.getSelectedItem())) {
 				JTextField classTextField = new JTextField(classId + " ");
 				classTextField.setEditable(false);
+				classTextField.setFont(Fonts.STANDARD_LABEL);
 				subDiplayPanel.add(classTextField);
 				subDiplayPanel.add(Box.createHorizontalStrut(10));
 			}
