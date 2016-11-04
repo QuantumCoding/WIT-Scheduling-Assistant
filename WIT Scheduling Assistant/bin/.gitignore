@@ -1,10 +1,12 @@
-/pages/
 /PageTester.class
 /Tester$Query.class
 /Tester.class
+/pages/
 /scheduling/
 /security/
 /user_interface/
 /util/
 /web_interface/
-/web_interface/
+/PureTester.class
+/pages_java/
+/PrueJavaTester.class

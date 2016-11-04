@@ -22,7 +22,7 @@ public class TermPage extends Page {
 	public TermPage() throws IOException {
 		super(References.Term_URL);
 		
-		HtmlForm form = super.formLookup(References.Term_FormName);
+		HtmlForm form = super.formLookup(References.Term_FormAction);
 		termSelector = form.getSelectByName(References.Term_SelectorName);
 		termSubmit = form.getInputByValue(References.Term_SubmitButton);
 		

@@ -30,7 +30,10 @@ public class References {
 	public static final String Term_URL = BaseUrl + "SSBPROD/bwskflib.P_SelDefTerm";
 	public static final String Term_Filter = "(View only)";
 	
-	public static final String Term_FormName = "/SSBPROD/bwcklibs.P_StoreTerm";
+	public static final String Term_FormAction = "/SSBPROD/bwcklibs.P_StoreTerm";
+	public static final String Term_Form_Path = "/HTML//FORM[@action='" + Term_FormAction + "']";
+	public static final String Term_Selector_Path = Term_Form_Path + "//SELECT";//[@id='term_in']";
+	
 	public static final String Term_SelectorName = "term_in";
 	public static final String Term_SubmitButton = "Submit";
 	
@@ -39,9 +42,30 @@ public class References {
 	public static final String Login_URL = BaseUrl + "ssomanager/c/SSB";	
 	
 	public static final String Login_FormId = "fm1";	
+	
+	public static final String Login_Form_Path = "/HTML//FORM[@id='" + Login_FormId + "']";
+	public static final String Login_Username_Path = Login_Form_Path + "//INPUT[@id='username']";
+	public static final String Login_Password_Path = Login_Form_Path + "//INPUT[@id='password']";
+	
 	public static final String Login_Username = "username";	
 	public static final String Login_Password = "password";
 	public static final String Login_SignInButton = "Sign In";
+	
+// ----------------------------------------------- Department ----------------------------------------------------------- \\
+		
+	public static final String Department_URL = BaseUrl + "SSBPROD/bwckgens.p_proc_term_date?"
+			+ "p_calling_proc=P_CrseSearch&p_term=";	
+	
+	public static final String Department_FormAction = "/SSBPROD/bwskfcls.P_GetCrse";	
+	
+	public static final String Department_Form_Path = "/HTML//FORM[@action='" + Department_FormAction + "']";
+	public static final String Department_Selector_Path = Department_Form_Path + "//SELECT[@id='subj_id']";
+	public static final String Department_Submit_Path = Department_Form_Path + "//INPUT[@name='SUB_BTN']";
+	
+// ----------------------------------------------- Department ----------------------------------------------------------- \\
+
+	public static final String Classes_Table_Path = "/HTML//TABLE[@class='datadisplaytable']";
+	public static final String Sections_Table_Path = "/HTML//TABLE[@class='datadisplaytable']";
 	
 // ----------------------------------------------- General ----------------------------------------------------------- \\
 	
