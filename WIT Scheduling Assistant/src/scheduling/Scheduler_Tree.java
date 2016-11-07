@@ -55,7 +55,6 @@ public class Scheduler_Tree {
 		visualDelay();
 		
 		this.stage = Stage.CollectingSections;
-		System.out.println(this.stage);
 	
 		if(preCollectedSections != null) {
 			for(ClassOption key : preCollectedSections.keySet()) {
@@ -94,14 +93,12 @@ public class Scheduler_Tree {
 		
 		this.current = 1; this.max = 1; 
 		this.stage = Stage.Done;
-		System.out.println(this.stage);
 	}
 	
 	private void weighSchedules(float[][] rankings) {
 		visualDelay();
 		this.current = 0; this.max = schedules.size(); 
 		this.stage = Stage.CalculatingWeights;
-		System.out.println(this.stage);
 		
 		for(TreeSchedule schedule : schedules) {
 			schedule.calculateWeight(rankings);
@@ -111,13 +108,17 @@ public class Scheduler_Tree {
 	
 	static HashMap<ClassOption, Color> createColorMap(Collection<? extends ClassAccessor> sections) {
 		HashMap<ClassOption, Color> colorMap = new HashMap<>();
+		HashMap<ClassOption, Integer> numberMap = new HashMap<>();
 		
-		float colorIncrement = .9f / sections.size();
+		Iterator<? extends ClassAccessor> iter = sections.iterator(); int i = 0;
+		while(iter.hasNext()) numberMap.putIfAbsent(iter.next().getClassOption(), i ++);
 		
-		int i = 0;
-		Iterator<? extends ClassAccessor> iter = sections.iterator();
+		float colorIncrement = .8f / (float) i;
+		
+		iter = sections.iterator();
 		while(iter.hasNext()) {
-			colorMap.put(iter.next().getClassOption(), Color.getHSBColor(i ++ * colorIncrement, 1, 1));
+			ClassOption clazz = iter.next().getClassOption();
+			colorMap.put(clazz, Color.getHSBColor(numberMap.get(clazz) * colorIncrement, .85f, 1));
 		}
 		
 		return colorMap;
@@ -126,7 +127,6 @@ public class Scheduler_Tree {
 	private ArrayList<TreeSchedule> collectSchedules() {
 		visualDelay();
 		this.current = 0; this.max = size; this.stage = Stage.RunningTree;
-		System.out.println(this.stage);
 		
 		HashMap<ClassOption, Color> colorMap = Scheduler_Tree.createColorMap(classes);
 		
@@ -162,7 +162,6 @@ public class Scheduler_Tree {
 		visualDelay();
 		this.current = 0; this.max = allConfigs.length;
 		this.stage = Stage.CalculatingConfigs;
-		System.out.println(this.stage);
 		
 		int last = 1; int nextMax = 0;
 		for(int i = 0; i < allConfigs.length; i ++) {
@@ -183,7 +182,6 @@ public class Scheduler_Tree {
 		visualDelay();
 		this.max = nextMax; this.current = 0;
 		this.stage = Stage.BuilingTree; 
-		System.out.println(this.stage);
 		
 		return expandBranch(allConfigs, 0, root = Node.makeRoot(allConfigs[0].length));
 	}

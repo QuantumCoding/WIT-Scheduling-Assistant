@@ -80,7 +80,7 @@ public class LoadingScreen extends JPanel {
 					if(progressDelta < 0) {
 					    if(renderProgress + progressDelta < targetProgress) {
 						    ((Timer) e.getSource()).stop();
-						    renderProgress = targetProgress + progressDelta;
+						    renderProgress = 0;//targetProgress + progressDelta;
 					    }
 					} else {
 					    if(renderProgress + progressDelta > targetProgress) {

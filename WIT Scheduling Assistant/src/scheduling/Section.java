@@ -126,6 +126,8 @@ public class Section implements ClassAccessor {
 			
 			isViable = true;
 		}
+
+		trimInstructor(this);
 	}
 
 	private int getNext(NodeList list, String nodeType, int index) {
@@ -164,7 +166,25 @@ public class Section implements ClassAccessor {
 		section.isViable = true;
 		section.labs = labs;
 		
+		trimInstructor(section);
 		return section;
+	}
+	
+	private static void trimInstructor(Section section) {
+		String[] nameParts = section.instructor.split(" ");
+		section.instructor = nameParts[0];
+		if(nameParts.length > 0) {
+			int addFrom = nameParts.length - 1;
+			int endAt = nameParts.length;
+			
+			if(nameParts[nameParts.length - 1].contains("(")) {
+				addFrom -= 1;
+				endAt -= 1;
+			}
+			
+			for(; addFrom < endAt; addFrom ++)
+				section.instructor += " " + nameParts[addFrom];
+		}
 	}
 	
 	public String toString() {

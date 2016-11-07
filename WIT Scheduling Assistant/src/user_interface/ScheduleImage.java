@@ -417,8 +417,7 @@ public class ScheduleImage extends BufferedImage {
 			g.dispose();
 			
 			File file = fileChooser.getSelectedFile();
-			int index = file.toString().lastIndexOf(".");
-			if(!file.toString().substring(index + 1).equalsIgnoreCase("png"))
+			if(!file.toString().endsWith(".png"))
 				file = new File(file.toString() + ".png");
 			
 			ImageIO.write(image, "png", file);
