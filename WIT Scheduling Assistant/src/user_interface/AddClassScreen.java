@@ -32,55 +32,60 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.miginfocom.swing.MigLayout;
-import pages.wit.LookupResultsPage.LookupResult;
+import pages.Choise;
+import pages.ClassOption;
+import pages.DepartmentSelectPage;
+import pages.TermPage;
 import scheduling.Section;
-import util.Choise;
 import util.Fonts;
 import util.References;
-import web_interface.PageLock;
 
 public class AddClassScreen extends JPanel implements ActionListener, ListSelectionListener {
 	private static final long serialVersionUID = 1L;
 	
 	private JComboBox<Choise> termComboBox;
-	private JList<LookupResult> classesList;
-	private DefaultListModel<LookupResult> classesListModel;
+	private JList<ClassOption> classesList;
+	private DefaultListModel<ClassOption> classesListModel;
 	
 	private JComboBox<Choise> subjectComboBox;
 	private DefaultComboBoxModel<Choise> subjectComboBoxModel;
-	private JList<LookupResult> classSelectList;
-	private DefaultListModel<LookupResult> classSelectListModel;
+	private JList<ClassOption> classSelectList;
+	private DefaultListModel<ClassOption> classSelectListModel;
 	
 	private JButton addButton;
 	private JButton submitButton;
 	private JButton removeButton;
 	private JButton clearButton;
 	
-	private PageLock pages;
 	private Display display;
 	private JPanel limitSectionsList;
 	
-	private HashMap<LookupResult, ArrayList<Section>> nonInvalidSections;
-	private HashMap<LookupResult, ArrayList<Boolean>> invalidSectionMarkings;
-	private volatile LookupResult limitingSection;
+	private HashMap<ClassOption, ArrayList<Section>> nonInvalidSections;
+	private HashMap<ClassOption, ArrayList<Boolean>> invalidSectionMarkings;
+	private ClassOption limitingSection;
+	private JButton menuButton;
 
-	public AddClassScreen(PageLock pages, Display display) {
+	public AddClassScreen(Display display) {
 		setBackground(Color.WHITE);
-		this.pages = pages;
 		this.display = display;
 		
 		nonInvalidSections = new HashMap<>();
 		invalidSectionMarkings = new HashMap<>();
 		
-		setLayout(new MigLayout("", "[][][grow]", "[][][grow][][grow][grow][]"));
+		setLayout(new MigLayout("", "[][][][][grow]", "[][][grow][][grow][grow][]"));
 		
 		JLabel witIconLabel = new JLabel("");
 		witIconLabel.setIcon(References.Icon_WIT_Header);
 		add(witIconLabel, "cell 0 0 1 3,alignx center,aligny center");
 		
+		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
+		menuButton.setFont(Fonts.MENU_BUTTON);
+		menuButton.setBackground(Color.WHITE);
+		add(menuButton, "cell 1 1 1 2,growy");
+		
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBackground(Color.WHITE);
-		add(rightPanel, "cell 2 1 1 5,grow");
+		add(rightPanel, "cell 4 1 1 5,grow");
 		rightPanel.setLayout(new MigLayout("insets 0 0 0 0", "[grow,fill]", "[][grow][][grow]"));
 		
 		JPanel limitSectionLabePanel = new JPanel();
@@ -126,15 +131,15 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel termPanel = new JPanel();
 		termPanel.setBackground(new Color(250,250,250));
 		termPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		add(termPanel, "cell 0 3,grow");
-		termPanel.setLayout(new MigLayout("insets 3px", "[][]", "[]"));
+		add(termPanel, "cell 0 3 3 1,grow");
+		termPanel.setLayout(new MigLayout("insets 3px", "[][grow]", "[]"));
 		
 		JLabel termLabel = new JLabel("Select Term: ");
 		termLabel.setFont(Fonts.MEDIUM_LABEL);
 		termPanel.add(termLabel, "cell 0 0,alignx right,aligny center");
 		
 		termComboBox = new JComboBox<>();
-		termComboBox.setModel(new DefaultComboBoxModel<>(pages.getTerms().toArray(new Choise[pages.getTerms().size()])));
+		termComboBox.setModel(new DefaultComboBoxModel<>(TermPage.getTerms().toArray(new Choise[1])));
 		termComboBox.setFont(Fonts.STANDARD_LABEL);
 		termPanel.add(termComboBox, "cell 1 0,growx,aligny top");
 		
@@ -143,17 +148,17 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		FlowLayout fl_dividerPanel = (FlowLayout) dividerPanel.getLayout();
 		fl_dividerPanel.setVgap(0);
 		fl_dividerPanel.setHgap(0);
-		add(dividerPanel, "cell 1 0 1 7,grow");
+		add(dividerPanel, "cell 3 0 1 7,grow");
 		
 		JPanel subjectPanel = new JPanel();
 		subjectPanel.setBackground(Color.WHITE);
 		subjectPanel.setBorder(UIManager.getBorder("ScrollPane.border"));
-		add(subjectPanel, "cell 0 4 1 2,grow");
+		add(subjectPanel, "cell 0 4 3 2,grow");
 		subjectPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 		
 		JPanel subjectSelectPanel = new JPanel();
 		subjectSelectPanel.setBackground(Color.WHITE);
-		subjectPanel.add(subjectSelectPanel, "cell 0 0,aligny bottom");
+		subjectPanel.add(subjectSelectPanel, "cell 0 0,growx,aligny bottom");
 		subjectSelectPanel.setLayout(new MigLayout("insets 0px", "[63px][grow]", "[23px]"));
 		
 		JLabel subjectLabel = new JLabel("Subject: ");
@@ -181,7 +186,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel addPanel = new JPanel();
 		addPanel.setBackground(Color.WHITE);
 		addPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		add(addPanel, "cell 0 6,grow");
+		add(addPanel, "cell 0 6 3 1,grow");
 		addPanel.setLayout(new MigLayout("", "[][grow]", "[]"));
 		
 		addButton = new JButton("Add Class");
@@ -197,7 +202,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel removePanel = new JPanel();
 		removePanel.setBackground(Color.WHITE);
 		removePanel.setBorder(new LineBorder(new Color(204, 0, 0)));
-		add(removePanel, "cell 2 6,grow");
+		add(removePanel, "cell 4 6,grow");
 		removePanel.setLayout(new MigLayout("", "[grow][grow]", "[]"));
 		
 		removeButton = new JButton("Remove");
@@ -218,13 +223,14 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		termComboBox.addActionListener(this);
 		classSelectList.addListSelectionListener(this);
 		
-		for(Choise subject : pages.getSubjects()) 
+		for(Choise subject : DepartmentSelectPage.getDepartments((Choise) termComboBox.getSelectedItem())) 
 			subjectComboBoxModel.addElement(subject);
 		
 		subjectComboBoxModel.setSelectedItem(null);
 		classSelectListModel.clear();
 
 		subjectComboBox.addActionListener(this);
+		menuButton.addActionListener(this);
 		
 		addButton.setEnabled(false);
 		submitButton.setEnabled(false);
@@ -240,15 +246,24 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == menuButton) {
+			display.switchToMainMenu();
+			return;
+		}
+		
 		if(e.getSource() == removeButton) {
 			for(int index : classesList.getSelectedIndices())
 				classesListModel.remove(index);
 			submitButton.setEnabled(classesListModel.size() > 1);
+			
+			limitSectionsList.removeAll();
+			limitSectionsList.updateUI();
+			
 			return;
 		}
 		
 		if(e.getSource() == addButton) {
-			LookupResult value = classSelectList.getSelectedValue();
+			ClassOption value = classSelectList.getSelectedValue();
 			if(classesListModel.contains(value)) return;
 			classesListModel.addElement(value);
 			
@@ -260,8 +275,8 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			subjectComboBoxModel.removeAllElements();
 			
 			SwingUtilities.invokeLater(() -> {
-				pages.changeTerm((Choise) termComboBox.getSelectedItem());
-				ArrayList<Choise> subjects = pages.getSubjects();
+				
+				ArrayList<Choise> subjects = DepartmentSelectPage.getDepartments((Choise) termComboBox.getSelectedItem());
 				
 				subjectComboBox.removeActionListener(this);
 				for(Choise subject : subjects) 
@@ -284,9 +299,10 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			
 			classSelectListModel.clear();
 			SwingUtilities.invokeLater(() -> {
-				ArrayList<LookupResult> classes = pages.getClasses((Choise) subjectComboBox.getSelectedItem());
+				ArrayList<ClassOption> classes = DepartmentSelectPage.selectDepartment(
+						(Choise) termComboBox.getSelectedItem(), (Choise) subjectComboBox.getSelectedItem()).getClassList();
 				
-				for(LookupResult clazz : classes)
+				for(ClassOption clazz : classes)
 					classSelectListModel.addElement(clazz);
 			});
 			
@@ -305,7 +321,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		}
 		
 		if(e.getSource() == submitButton) {
-			ArrayList<LookupResult> classes = new ArrayList<>(classesListModel.size());
+			ArrayList<ClassOption> classes = new ArrayList<>(classesListModel.size());
 			for(int i = 0; i < classesListModel.size(); i ++)
 				classes.add(classesListModel.get(i));
 			
@@ -317,59 +333,41 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			if(limitingSection == null) return;
 			
 			int compIndex = Integer.parseInt(((JCheckBox) e.getSource()).getName());
-			invalidSectionMarkings.get(getLimitingSection()).set(compIndex, ((JCheckBox) e.getSource()).isSelected());
+			invalidSectionMarkings.get(limitingSection).set(compIndex, ((JCheckBox) e.getSource()).isSelected());
 			return;
 		}
 	}
 
-	private boolean currentlyAdding;
-	private final Object lock = new Object();
-	
 	public void valueChanged(ListSelectionEvent e) {
 		if(e.getSource() == classesList) {
 			removeButton.setEnabled(classesList.getSelectedIndex() != -1);
-			if(!removeButton.isEnabled() && !currentlyAdding) {
+			
+			if(classesList.getSelectedValue() != null && !classesList.getSelectedValue().equals(limitingSection)) {
+				limitingSection = classesList.getSelectedValue();
+				if(limitingSection == null) return;
+
 				limitSectionsList.removeAll();
 				limitSectionsList.updateUI();
-			}
-			
-			new Thread(() -> {
-				if(currentlyAdding) {
-					synchronized(lock) {
-						try { lock.wait(250); } 
-						catch(Exception e1) { }
-					}
-				}
-
-				currentlyAdding = true;
-				setLimitingSection(null);
 				
-				if(removeButton.isEnabled()) {
-					setLimitingSection(classesList.getSelectedValue());
-					if(getLimitingSection() == null) {
-						currentlyAdding = false;
-						return;
-					}
+				SwingUtilities.invokeLater(() -> {
+					limitSectionsList.removeAll();
+					limitSectionsList.updateUI();
 					
-					ArrayList<LookupResult> wrapper = new ArrayList<>();
-					wrapper.add(getLimitingSection());
-
 					ArrayList<Section> sections;
-					if((sections = nonInvalidSections.get(getLimitingSection())) == null) {
-						sections = pages.collectSections(wrapper).get(getLimitingSection());
-						if(sections == null) return;
+					if((sections = nonInvalidSections.get(limitingSection)) == null) {
 						
-						nonInvalidSections.put(getLimitingSection(), sections);
+						sections = DepartmentSelectPage.selectClass(
+								limitingSection.getTerm(), limitingSection.getDepartment(), limitingSection).getSections();
+						nonInvalidSections.put(limitingSection, sections);
 						
 						ArrayList<Boolean> markings = new ArrayList<>();
 						for(int i = 0; i < sections.size(); i ++)
 							markings.add(true);
-						invalidSectionMarkings.put(getLimitingSection(), markings);
+						invalidSectionMarkings.put(limitingSection, markings);
 					}
-						
+					
 					int i = 0;
-					ArrayList<Boolean> markings = invalidSectionMarkings.get(getLimitingSection());
-					limitSectionsList.removeAll();
+					ArrayList<Boolean> markings = invalidSectionMarkings.get(limitingSection);
 					
 					for(Section section : sections) {
 						JCheckBox valid = new JCheckBox(section.getSectionId() + " | " + 
@@ -385,13 +383,8 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 					}
 					
 					limitSectionsList.updateUI();
-					currentlyAdding = false;
-					
-					synchronized(lock) {
-						lock.notifyAll();
-					}
-				}
-			}).start();
+				});
+			}
 			
 			return;
 		}
@@ -401,7 +394,4 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			return;
 		}
 	}
-	
-	private LookupResult getLimitingSection() { return limitingSection; }
-	private void setLimitingSection(LookupResult limitingSection) { this.limitingSection = limitingSection; }
 }

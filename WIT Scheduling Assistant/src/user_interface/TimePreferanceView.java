@@ -81,7 +81,7 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	}
 
 	public void changeSchedule() {
-		scheduleImage = new ScheduleImage(null, 0);
+		scheduleImage = new ScheduleImage(null);
 		scheduleDisplay.repaint();
 	}
 
@@ -106,7 +106,7 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 					shadingModel[0][i][j].getRed(), 
 					shadingModel[0][i][j].getGreen(), 
 					shadingModel[0][i][j].getBlue(), 
-				null)[0] * 3f/5f;
+				null)[0] * 3f;
 		
 		return ranks;
 	}
@@ -166,7 +166,7 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	
 	private void updateImage() {
 		scheduleImage.setShadingModel(shadingModel);
-		scheduleImage.render(0);
+		scheduleImage.render();
 		scheduleDisplay.repaint();
 	}
 	

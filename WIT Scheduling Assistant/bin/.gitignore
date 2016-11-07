@@ -1,12 +1,8 @@
-/PageTester.class
-/Tester$Query.class
-/Tester.class
-/pages/
-/scheduling/
-/security/
+/PrueJavaTester.java
+/.gitignore
 /user_interface/
 /util/
 /web_interface/
-/PureTester.class
-/pages_java/
-/PrueJavaTester.class
+/launcher/
+/scheduling/
+/pages/

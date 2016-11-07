@@ -14,24 +14,22 @@ import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.SwingWorker;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
-import pages.wit.LookupResultsPage.LookupResult;
-import scheduling.Schedule;
-import scheduling.Scheduler;
+import pages.ClassOption;
+import scheduling.Scheduler_Tree;
+import scheduling.Scheduler_Tree.Stage;
 import scheduling.SchedulingException;
 import scheduling.Section;
+import scheduling.TreeSchedule;
 import security.SecretKeyUtil;
 import util.References;
-import web_interface.PageLock;
 
 public class Display extends JFrame {
 	private static final long serialVersionUID = 4395497351445767482L;
@@ -44,16 +42,12 @@ public class Display extends JFrame {
 	private ScheduleDisplayScreen displayScreen;
 	private TimePreferanceScreen timeScreen;
 	
-	private PageLock pages;
 	private SecretKeyUtil vault;
-	private Scheduler scheduler;
 	
-	public Display(PageLock pages) {
+	public Display() {
 		try {
 			UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 		} catch(ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) { }
-		
-		this.pages = pages;
 		
 		try {
 			this.vault = new SecretKeyUtil(Paths.get(References.Vault_Location), References.Vault_Password.toCharArray());
@@ -62,8 +56,8 @@ public class Display extends JFrame {
 			e.printStackTrace();
 		}
 		
-		loginScreen = new LoginScreen(pages, this);
-		menuScreen = new MainMenuScreen(pages, this);
+		loginScreen = new LoginScreen(this);
+		menuScreen = new MainMenuScreen(this);
 		loadingScreen = new LoadingScreen();
 		timeScreen = new TimePreferanceScreen(this);
 		
@@ -136,7 +130,7 @@ public class Display extends JFrame {
 		((CardLayout) contentPane.getLayout()).show(contentPane, "timeScreen");
 	}
 	
-	public void showSchedules(ArrayList<Schedule> schedules) {
+	public void showSchedules(ArrayList<TreeSchedule> schedules) {
 		if(displayScreen == null) {
 			displayScreen = new ScheduleDisplayScreen(this, schedules);
 			contentPane.add(displayScreen, "displayScreen");
@@ -156,7 +150,7 @@ public class Display extends JFrame {
 	}
 	
 	public void loginComplete() {
-		addClassScreen = new AddClassScreen(pages, this);
+		addClassScreen = new AddClassScreen(this);
 		contentPane.add(addClassScreen, "addClassScreen");
 
 		pack();
@@ -168,132 +162,45 @@ public class Display extends JFrame {
 	public boolean shouldSave() { return loginScreen.rememberMe(); }
 	public Color[][][] getTimeSchadingModel() { return timeScreen.getShadingModel(); }
 	
-	public void submitClasses(ArrayList<LookupResult> classes, HashMap<LookupResult, ArrayList<Section>> preCollectedSections, HashMap<LookupResult, ArrayList<Boolean>> nonValid) {
-		showLoading("Collecting Class Options...");
-		scheduler = new Scheduler(pages, classes, preCollectedSections, nonValid);
-		scheduler.setRankings(timeScreen.getRankings());
-		new SchedulerTask().execute();
-	}
-	
-	private class SchedulerTask extends SwingWorker<Void, Integer> {
-		private int stage, useCount;
-		private boolean error;
+	public void submitClasses(ArrayList<ClassOption> classes, HashMap<ClassOption, ArrayList<Section>> preCollectedSections, HashMap<ClassOption, ArrayList<Boolean>> nonValid) {
+		final Scheduler_Tree scheduler = new Scheduler_Tree();
 		
-		private String errorMessage;
-		
-		protected Void doInBackground() throws Exception {
-			publish(-2); 
-			scheduler.compare();
-			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			
-			publish(-1); int possibleScheduals = 0;
-			try { possibleScheduals = scheduler.calculateCombinationCount(); }
-			catch(SchedulingException e) { 
-				errorMessage = e.getMessage();
-				publish(-3);
-
-				e.printStackTrace(); 
-				return null; 
-			}
-			
-			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			
-			stage = 0;
-			for(int i = 0; i < possibleScheduals; i ++) {
-				scheduler.createSchedule(i);
-				publish(i + 1);
-			}
-
-			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			stage = 1;
-			for(int i = 0; i < possibleScheduals; i ++) {
-				scheduler.removeInvalidSchedules(i);
-				publish(i + 1);
-			}
-			
-			
-			if(scheduler.getSchedules().size() < 1) {
-				errorMessage = "No Possible Schedules for Selected Classes";
-				publish(-3);
-
-				return null; 
-			}
-			
-			ArrayList<Schedule> schedules = scheduler.getSchedules();
-			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			stage = 2; useCount = schedules.size();
-			
-			for(int i = 0; i < schedules.size(); i ++) {
-				scheduler.calculateVariants(schedules.get(i).getId());
-				publish(i + 1);
-			}
-			
-			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			stage = 3;
-			
-			for(int i = 0; i < schedules.size(); i ++) {
-				scheduler.calculateWeights(schedules.get(i).getId());
-				publish(i + 1);
-			}
-			
-			try { Thread.sleep(500); } catch(InterruptedException e) {}
-			return null;
-		}
-		
-		protected void process(List<Integer> values) {
-			switch(values.get(values.size() - 1)) {
-				case -2: showLoading("Comparing Classes..."); break;
-				case -1: showLoading("Preparing to Create Schedule.."); break;
-				
-				case -3: error = true;
-					contentPane.add(new ErrorScreen(Display.this, errorMessage), "error");
-					((CardLayout) contentPane.getLayout()).show(contentPane, "error");
-				break;
-				
-				default: 
-					switch(stage) {
-						
-						case 0:
-							showLoading("Creating Schedule "
-									+ "[" + values.get(values.size() - 1) + " / " + scheduler.posible() + "]", 
-									values.get(values.size() - 1), scheduler.posible());  
-						break;
-						
-						case 1:
-							showLoading("Removing Invalid Schedules "
-									+ "[" + values.get(values.size() - 1) + " / " + scheduler.posible() + "]", 
-									values.get(values.size() - 1), scheduler.posible());  
-						break;
-						
-						case 2:
-							showLoading("Creating Varaints [" + 
-								values.get(values.size() - 1) + " / " + useCount + "]",
-								values.get(values.size() - 1), useCount);  
-						break;
-						
-						case 3:
-							showLoading("Calculating Weights [" + 
-								values.get(values.size() - 1) + " / " + useCount + "]",
-								values.get(values.size() - 1), useCount);  
-						break;
+		new Thread(() -> {
+			while(scheduler == null || scheduler.getStage() != Stage.Done) {
+				if(scheduler != null) {
+					Stage stage = scheduler.getStage();
+					
+					if(stage.isIndeterminate()) {
+						showLoading(stage.getMessage() + "...");
+					} else {
+						showLoading(stage.getMessage() + 
+								" [" + scheduler.getCurrent() + " / " + scheduler.getStageMax() + "]", 
+								scheduler.getCurrent(), scheduler.getStageMax()
+							);
 					}
+				} 
+				
+				try { Thread.sleep(10); } catch(InterruptedException e) { }
 			}
-		}
+		}, "Swing Updater Thread").start();
 		
-		protected void done() {
-			if(stage < 1)
-				return;
-			
-			scheduler.cleanOut();
-//			System.out.println("Done");
-			
-			if(!error) {
+		new Thread(() -> {
+			try {
+				scheduler.run(classes, timeScreen.getRankings(), preCollectedSections, nonValid);
+				if(scheduler.getSchedules().isEmpty())
+					throw new SchedulingException("No Valid Schedules");
+				
 				displayScreen = new ScheduleDisplayScreen(Display.this, scheduler.getSchedules());
 				contentPane.add(displayScreen, "displayScreen");
 	
 				((CardLayout) contentPane.getLayout()).show(contentPane, "displayScreen");
+				
+			} catch(SchedulingException e) {
+				contentPane.add(new ErrorScreen(Display.this, e.getMessage()), "error");
+				((CardLayout) contentPane.getLayout()).show(contentPane, "error");
 			}
-		}
+			
+		}, "Tree Scheduling Thread").start();
 	}
 	
 	public SecretKeyUtil getVault() { return vault; }

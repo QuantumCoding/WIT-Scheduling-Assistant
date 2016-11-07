@@ -22,8 +22,8 @@ import scheduling.ClassConfig;
 import scheduling.Designation;
 import scheduling.Location;
 import scheduling.Period.WeekDay;
-import scheduling.Schedule;
 import scheduling.Section;
+import scheduling.TreeSchedule;
 
 public class ScheduleImage extends BufferedImage {
 	private static JFileChooser fileChooser;
@@ -130,17 +130,17 @@ public class ScheduleImage extends BufferedImage {
 	
 //	------------------------------ End of Static ------------------------------ \\
 	
-	private Schedule schedule;
+	private TreeSchedule schedule;
 	private Color[][][] shadingModel;
 	
-	public ScheduleImage(Schedule schedule, int variant) {
+	public ScheduleImage(TreeSchedule schedule) {
 		super(RESOLUTION_X + 3, RESOLUTION_Y + 3, TYPE_INT_ARGB);
 		this.schedule = schedule;
 		
-		render(variant);
+		render();
 	}
 	
-	public void render(int variant) {
+	public void render() {
 		Graphics2D g = createGraphics();
 		g.setBackground(Color.WHITE);
 		g.clearRect(0, 0, RESOLUTION_XP, RESOLUTION_YP);
@@ -151,7 +151,7 @@ public class ScheduleImage extends BufferedImage {
 			drawShading(g);
 		
 		if(schedule != null) {
-			ArrayList<ClassConfig> scheduleVarient = schedule.getVarient(variant);
+			ArrayList<ClassConfig> scheduleVarient = schedule.getSections();
 			for(ClassConfig config : scheduleVarient)
 				drawClass(g, config);
 		}
@@ -260,7 +260,7 @@ public class ScheduleImage extends BufferedImage {
 		int midWidth = xShift + width / 2;
 		
 		Rectangle2D b = null; boolean first = true; int index = 0;
-		for(String part : separate(g, info.getSubject().getClassName(), width, new Font("Tahoma", Font.BOLD, 20), 12, true)) {
+		for(String part : separate(g, info.getSubject().getName(), width, new Font("Tahoma", Font.BOLD, 20), 12, true)) {
 			if(first) { first = false; g.setFont(new Font("Tahoma", Font.BOLD, Integer.parseInt(part))); continue; }
 			b = drawCenteredString(g, capitalize(part), midWidth, yShift + 16 + g.getFont().getSize() * index ++, 
 					width - 10, height, -2);

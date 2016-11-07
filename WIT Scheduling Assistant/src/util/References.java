@@ -12,19 +12,6 @@ import user_interface.Display;
 public class References {
 	public static final String BaseUrl = "https://prodweb2.wit.edu/";
 
-// ----------------------------------------------- Lookup ----------------------------------------------------------- \\	
-		
-	public static final String Lookup_Result_Form = "/SSBPROD/bwskfcls.P_GetCrse";
-	public static final String Lookup_Result_Select = "SUB_BTN";
-	
-// ----------------------------------------------- Subject ----------------------------------------------------------- \\	
-	
-	public static final String Subject_URL = BaseUrl + "SSBPROD/bwckgens.p_proc_term_date";
-	
-	public static final String Subject_Form = "/SSBPROD/bwskfcls.P_GetCrse";
-	public static final String Subject_Selector = "sel_subj";
-	public static final String Subject_SearchButton = "Course Search";
-	
 // ----------------------------------------------- Term ----------------------------------------------------------- \\	
 
 	public static final String Term_URL = BaseUrl + "SSBPROD/bwskflib.P_SelDefTerm";
@@ -33,9 +20,6 @@ public class References {
 	public static final String Term_FormAction = "/SSBPROD/bwcklibs.P_StoreTerm";
 	public static final String Term_Form_Path = "/HTML//FORM[@action='" + Term_FormAction + "']";
 	public static final String Term_Selector_Path = Term_Form_Path + "//SELECT";//[@id='term_in']";
-	
-	public static final String Term_SelectorName = "term_in";
-	public static final String Term_SubmitButton = "Submit";
 	
 // ----------------------------------------------- Login ----------------------------------------------------------- \\
 	
@@ -46,10 +30,10 @@ public class References {
 	public static final String Login_Form_Path = "/HTML//FORM[@id='" + Login_FormId + "']";
 	public static final String Login_Username_Path = Login_Form_Path + "//INPUT[@id='username']";
 	public static final String Login_Password_Path = Login_Form_Path + "//INPUT[@id='password']";
+
+// ----------------------------------------------- Schedule ----------------------------------------------------------- \\
 	
-	public static final String Login_Username = "username";	
-	public static final String Login_Password = "password";
-	public static final String Login_SignInButton = "Sign In";
+	public static final String Schedule_URL = BaseUrl + "SSBPROD/bwskfshd.P_CrseSchd";
 	
 // ----------------------------------------------- Department ----------------------------------------------------------- \\
 		
@@ -62,7 +46,7 @@ public class References {
 	public static final String Department_Selector_Path = Department_Form_Path + "//SELECT[@id='subj_id']";
 	public static final String Department_Submit_Path = Department_Form_Path + "//INPUT[@name='SUB_BTN']";
 	
-// ----------------------------------------------- Department ----------------------------------------------------------- \\
+// ----------------------------------------------- Classes ----------------------------------------------------------- \\
 
 	public static final String Classes_Table_Path = "/HTML//TABLE[@class='datadisplaytable']";
 	public static final String Sections_Table_Path = "/HTML//TABLE[@class='datadisplaytable']";
@@ -103,9 +87,9 @@ public class References {
 
 // ----------------------------------------------- Thread ----------------------------------------------------------- \\
 	
-	public static final String Thread_Name = "WIT-Pages Thread";
 
 // ----------------------------------------------- Images ----------------------------------------------------------- \\
+	
 	public static ImageIcon Icon_WIT_Header = null;
 	static { // * Fonts.LENGTH_SCALE
 		 try {
@@ -116,7 +100,8 @@ public class References {
 					BufferedImage.TYPE_INT_ARGB);
 			 
 			 Graphics g = scaledImage.getGraphics();
-			 g.drawImage(loadedImage, 0, 0, scaledImage.getWidth(), scaledImage.getHeight(), null);
+			 g.drawImage(loadedImage, (int) (7 * Fonts.LENGTH_SCALE), (int) (7 * Fonts.HEIGHT_SCALE), 
+					 scaledImage.getWidth(), scaledImage.getHeight(), null);
 			 g.dispose();
 			 
 			 Icon_WIT_Header = new ImageIcon(scaledImage);
