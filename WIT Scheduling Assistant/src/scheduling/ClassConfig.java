@@ -1,6 +1,10 @@
 package scheduling;
 
-public class ClassConfig {
+import java.util.ArrayList;
+
+import pages.ClassOption;
+
+public class ClassConfig implements ClassAccessor {
 	public static final int NO_LAB = -1;
 	
 	private Section section;
@@ -11,6 +15,30 @@ public class ClassConfig {
 		this.lab = lab;
 	}
 	
+	public boolean doesConflict(ClassConfig otherConfig) {
+		if(otherConfig == null) return false;
+		Section other = otherConfig.getSection();
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<Designation> otherDesignations = (ArrayList<Designation>) other.getDesignations().clone();
+		if(otherConfig.getLab() != ClassConfig.NO_LAB)
+			otherDesignations.addAll(other.getLabs().get(otherConfig.getLab()).getDesignations());
+		
+		@SuppressWarnings("unchecked")
+		ArrayList<Designation> currentDesignations = (ArrayList<Designation>) section.getDesignations().clone();
+		if(this.lab != ClassConfig.NO_LAB)
+			currentDesignations.addAll(section.getLabs().get(this.lab).getDesignations());
+		
+		for(Designation designation : currentDesignations) {
+		for(Designation otherDesig : otherDesignations) {
+			if(designation.getPeriod().intersect(otherDesig.getPeriod())) {
+				return true;
+			}
+		}}
+		
+		return false;
+	}
+	
 	public Section getSection() { return section; }
 	public int getLab() { return lab; }
 	
@@ -18,7 +46,6 @@ public class ClassConfig {
 		return "Lab: " + lab;
 	}
 
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
@@ -27,7 +54,6 @@ public class ClassConfig {
 		return result;
 	}
 
-	@Override
 	public boolean equals(Object obj) {
 		if(this == obj) return true;
 		if(obj == null) return false;
@@ -47,6 +73,6 @@ public class ClassConfig {
 		
 		return true;
 	}
-	
-	
+
+	public ClassOption getClassOption() { return section.getClassOption(); }
 }

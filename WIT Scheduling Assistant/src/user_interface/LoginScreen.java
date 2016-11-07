@@ -21,13 +21,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EtchedBorder;
 
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
-
 import net.miginfocom.swing.MigLayout;
+import pages.LoginPage;
+import pages.LoginPage.State;
 import security.SecretKeyUtil;
 import util.Fonts;
 import util.References;
-import web_interface.PageLock;
 
 public class LoginScreen extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 7732473592531545896L;
@@ -44,11 +43,9 @@ public class LoginScreen extends JPanel implements ActionListener {
 	
 	private JLabel errorLabel;
 
-	private PageLock pages;
 	private Display display;
 	
-	public LoginScreen(PageLock pages, Display display) {
-		this.pages = pages;
+	public LoginScreen(Display display) {
 		this.display = display;
 		
 		setBackground(Color.WHITE);
@@ -141,14 +138,13 @@ public class LoginScreen extends JPanel implements ActionListener {
 		display.showLoading("Logging in as \"" + usernameInput.getText() + "\"...");
 		
 		new Thread(() -> {
-			HtmlPage responcePage = pages.login(usernameInput.getText(), passwordInput.getText());
+			State result = LoginPage.login(usernameInput.getText(), passwordInput.getText());
 		
-			if(!responcePage.asXml().contains("Personal Information")) {
+			if(result == State.Failure) {
 				errorLabel.setVisible(true);
 				passwordInput.setText("");
 			
 			} else {
-				pages.loginComplete();
 				errorLabel.setVisible(false);
 				
 				try {
@@ -164,6 +160,8 @@ public class LoginScreen extends JPanel implements ActionListener {
 				} catch(KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException | InvalidKeySpecException ex) {
 					ex.printStackTrace();
 				}
+				
+				display.loginComplete();
 			}
 		}).start();
 	}

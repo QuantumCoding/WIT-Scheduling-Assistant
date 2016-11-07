@@ -1,20 +1,18 @@
 package scheduling;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.ListIterator;
 
-import com.gargoylesoftware.htmlunit.html.DomElement;
-import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlTableRow;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 
-import pages.wit.LookupResultsPage.LookupResult;
+import pages.ClassOption;
 
-public class Section {
-	public static boolean DEBUG_ALLOW_NON_REG_CLASS = false;
+public class Section implements ClassAccessor {
+	public static boolean DEBUG_ALLOW_NON_REG_CLASS = true;
 	
-	private LookupResult subject;
+	private ClassOption subject;
 	private String className;
 	private String classId;
 
@@ -31,21 +29,43 @@ public class Section {
 	
 	private ArrayList<Section> labs;
 	
-	public Section(Section prevSection, LookupResult subject, HtmlTableRow row) {
-		List<HtmlElement> elements = row.getElementsByTagName("td");
-		if(elements.size() < 17) throw new IllegalArgumentException("Invalid TR! " + row);
+	public Section(Section prevSection, ClassOption subject, Element row) {
+		ArrayList<String> data = new ArrayList<>();
+		
+		NodeList rowNodes = row.getChildNodes(); int tableItemIndex = -1;
+		while((tableItemIndex = getNext(rowNodes, "td", tableItemIndex)) != -1) {
+			Element tableItem = (Element) rowNodes.item(tableItemIndex);
+		
+			String value = "";
+			NodeList tableItemNodes = tableItem.getChildNodes();
+			for(int i = 0; i < tableItemNodes.getLength(); i ++) {
+				Node child = tableItemNodes.item(i);
+				
+				if(child == null) continue;
+				if(!(child.getNodeType() == Node.TEXT_NODE || child.getNodeType() == Node.ELEMENT_NODE)) 
+					continue;
+				
+				value += child.getTextContent().trim();
+			}
+			
+			if(value.trim().isEmpty()) continue;
+			data.add(value);
+		}
+		
+		if(data.size() < 17)
+			throw new IllegalArgumentException("Invalid TR! " + data);
 		
 		this.subject = subject;
 		
 		boolean carryCourse = false;
-		String courseNumberStr = elements.get(1).getFirstChild().getTextContent().trim();
+		String courseNumberStr = data.get(1);
 		try { courseNumber = Integer.parseInt(courseNumberStr); }
 		catch(NumberFormatException e) { carryCourse = true; }
 		
 		if(carryCourse) {
-			String days = elements.get(8).getTextContent();
-			String time = elements.get(9).getTextContent();
-			String location = elements.get(15).getTextContent();
+			String days = data.get(8);
+			String time = data.get(9);
+			String location = data.get(15);
 		
 			designations = prevSection.getDesignations();
 			Campus campus = designations.get(0).getLocation().getCampus();
@@ -53,27 +73,25 @@ public class Section {
 			return;
 		}
 
-		isOpen = elements.get(0).getChildElementCount() > 1;
+		isOpen = !data.get(0).equalsIgnoreCase("C");
 		if(!isOpen && DEBUG_ALLOW_NON_REG_CLASS) {
-			Iterator<DomElement> iter = elements.get(0).getChildElements().iterator();
-			if(iter.hasNext())
-				isOpen = iter.next().getTextContent().equalsIgnoreCase("NR");
+			isOpen = data.get(0).equalsIgnoreCase("NR");
 		}
 		
-		classId = elements.get(3).getTextContent();
-		sectionId = elements.get(4).getTextContent();
+		classId = data.get(3);
+		sectionId = data.get(4);
 		
-		Campus campus = Campus.valueOf(elements.get(5).getTextContent());
-		String credStr = elements.get(6).getTextContent();
+		Campus campus = Campus.valueOf(data.get(5));
+		String credStr = data.get(6);
 		int slashIndex = credStr.indexOf("/");
 		credits = Double.parseDouble(credStr.substring(0, slashIndex == -1 ? credStr.length() : slashIndex));
 		
-		className = elements.get(7).getTextContent();
-		String days = elements.get(8).getTextContent();
-		String time = elements.get(9).getTextContent();
+		className = data.get(7);
+		String days = data.get(8);
+		String time = data.get(9);
 		
-		instructor = elements.get(13).getTextContent();
-		String location = elements.get(15).getTextContent();
+		instructor = data.get(13);
+		String location = data.get(15);
 		
 		designations = new ArrayList<>();
 		designations.addAll(Designation.parse(campus, location, days, time));
@@ -89,7 +107,7 @@ public class Section {
 		}
 		
 		notViable:
-		if(isOpen || true) {
+		if(isOpen) {
 			isViable = false;
 			
 			for(Designation designation : designations)
@@ -108,11 +126,29 @@ public class Section {
 			
 			isViable = true;
 		}
+
+		trimInstructor(this);
 	}
 
+	private int getNext(NodeList list, String nodeType, int index) {
+		for(int i = index + 1; i < list.getLength(); i ++) {
+			Node node = list.item(i);
+			
+			if(node == null) continue;
+			if(!(node instanceof Element)) continue;
+			
+			Element element = (Element) node;
+			if(!element.getTagName().equalsIgnoreCase(nodeType)) continue;
+			
+			return i;
+		}
+		
+		return -1;
+	}
+	
 	private Section() {}
 	
-	public static Section parse(LookupResult subject, String className, String classId, int courseNumber, String sectionId,
+	public static Section parse(ClassOption subject, String className, String classId, int courseNumber, String sectionId,
 			double credits, ArrayList<Designation> designations, String instructor, boolean isLab, ArrayList<Section> labs) {
 		Section section = new Section();
 
@@ -130,7 +166,25 @@ public class Section {
 		section.isViable = true;
 		section.labs = labs;
 		
+		trimInstructor(section);
 		return section;
+	}
+	
+	private static void trimInstructor(Section section) {
+		String[] nameParts = section.instructor.split(" ");
+		section.instructor = nameParts[0];
+		if(nameParts.length > 0) {
+			int addFrom = nameParts.length - 1;
+			int endAt = nameParts.length;
+			
+			if(nameParts[nameParts.length - 1].contains("(")) {
+				addFrom -= 1;
+				endAt -= 1;
+			}
+			
+			for(; addFrom < endAt; addFrom ++)
+				section.instructor += " " + nameParts[addFrom];
+		}
 	}
 	
 	public String toString() {
@@ -185,8 +239,21 @@ public class Section {
 		
 		return validConfigs;
 	}
+	
+	public ArrayList<ClassConfig> calculateConfigurations() {
+		ArrayList<ClassConfig> validConfigs = new ArrayList<>();
+		
+		for(int i = -1; i < (labs == null ? 0 : labs.size()); i ++) {
+			if(i > -1 && !labs.get(i).isViable()) continue;
+			validConfigs.add(new ClassConfig(this, i));
+		}
+		
+		if(validConfigs.size() > 1) 
+			validConfigs.remove(0);
+		return validConfigs;
+	}
 
-	public LookupResult getSubject() { return subject; }
+	public ClassOption getSubject() { return subject; }
 	public String getClassName() { return className; }
 	public String getClassId() { return classId; }
 	
@@ -204,4 +271,5 @@ public class Section {
 	public boolean isViable() { return isViable; }
 	
 	public ArrayList<Section> getLabs() { return labs; }
+	public ClassOption getClassOption() { return subject; }
 }

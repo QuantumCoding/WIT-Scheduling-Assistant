@@ -16,10 +16,10 @@ import javax.swing.JSeparator;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
-import scheduling.Schedule;
+import pages.ViewSchedulePage;
+import scheduling.TreeSchedule;
 import util.Fonts;
 import util.References;
-import web_interface.PageLock;
 
 public class MainMenuScreen extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 1247067336925789430L;
@@ -31,11 +31,9 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 	private JLabel discriptionLabel;
 	
 	private Display display;
-	private PageLock pages;
 
-	public MainMenuScreen(PageLock pages, Display display) {
+	public MainMenuScreen(Display display) {
 		this.display = display;
-		this.pages = pages;
 		
 		setBackground(Color.WHITE);
 		setLayout(new MigLayout("", "[][grow][]", "[][grow][]"));
@@ -159,8 +157,8 @@ public class MainMenuScreen extends JPanel implements ActionListener {
 			display.showLoading("Collecting Schedule Information...");
 			
 			new Thread(() -> {
-				ArrayList<Schedule> schedule = new ArrayList<>();
-				schedule.add(pages.getSchedule());
+				ArrayList<TreeSchedule> schedule = new ArrayList<>();
+				schedule.add(ViewSchedulePage.getSchedule());
 				display.showSchedules(schedule);
 			}).start();
 			return;

@@ -13,10 +13,8 @@ import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,14 +23,14 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
-import scheduling.Schedule;
+import scheduling.TreeSchedule;
 import util.Fonts;
 import util.References;
 
 public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	private static final long serialVersionUID = 2146555153971725092L;
 
-	private ArrayList<Schedule> schedules;
+	private ArrayList<TreeSchedule> schedules;
 	private int selectedIndex;
 	
 	private JButton prevButton;
@@ -43,17 +41,14 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	private JButton menuButton;
 	private JCheckBox overlayButton;
 
-	private JLabel variantLabel;
-	private JComboBox<Integer> variantComboBox;
-	private DefaultComboBoxModel<Integer> variantComboBoxModel;
-	
 	private JButton registerButton;
 	private ScheduleView scheduleDisplayScrollPane;
 	
 	private Display display;
 	private boolean updating;
+	private JCheckBox trimCheckBox;
 	
-	public ScheduleDisplayScreen(Display display, ArrayList<Schedule> schedules) {
+	public ScheduleDisplayScreen(Display display, ArrayList<TreeSchedule> schedules) {
 		this.display = display;
 		this.schedules = schedules;
 		
@@ -63,22 +58,28 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		JPanel topPanel = new JPanel();
 		topPanel.setBackground(Color.WHITE);
 		add(topPanel, "cell 0 0 1 2,grow");
-		topPanel.setLayout(new MigLayout("", "[grow][][][20%,right]", "[grow]"));
+		topPanel.setLayout(new MigLayout("", "[grow][][][20%,right]", "[grow][grow]"));
+		
+		trimCheckBox = new JCheckBox("<HTML><CENTER>Trim<BR>Schedule</CENTER></HTML>");
+		trimCheckBox.setSelected(true);
+		trimCheckBox.setFont(Fonts.STANDARD_LABEL);
+		trimCheckBox.setBackground(Color.WHITE);
+		topPanel.add(trimCheckBox, "cell 1 0,aligny center");
 		
 		overlayButton = new JCheckBox("<HTML><CENTER>Overlay<BR>Pref.</CENTER></HTML>");
 		overlayButton.setFont(Fonts.STANDARD_LABEL);
 		overlayButton.setBackground(Color.WHITE);
-		topPanel.add(overlayButton, "cell 1 0,aligny bottom");
+		topPanel.add(overlayButton, "cell 1 1,aligny center");
 		
 		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
 		menuButton.setFont(Fonts.MENU_BUTTON);
 		menuButton.setBackground(Color.WHITE);
-		topPanel.add(menuButton, "cell 2 0,growy");
+		topPanel.add(menuButton, "cell 2 0 1 2,growy");
 		
 		JPanel scheduleControlPanel = new JPanel();
 		scheduleControlPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
 		scheduleControlPanel.setBackground(Color.WHITE);
-		topPanel.add(scheduleControlPanel, "flowx,cell 3 0,growx,aligny center");
+		topPanel.add(scheduleControlPanel, "flowx,cell 3 0 1 2,growx,aligny center");
 		scheduleControlPanel.setLayout(new MigLayout("", "[grow][grow]", "[grow][][]"));
 		
 		JLabel witHeaderLabel = new JLabel("Possible Schedules");
@@ -101,7 +102,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		
 		JLabel label = new JLabel("");
 		label.setIcon(References.Icon_WIT_Header);
-		topPanel.add(label, "cell 0 0,alignx left,aligny center");
+		topPanel.add(label, "cell 0 0 1 2,alignx left,aligny center");
 		
 		scheduleDisplayScrollPane = new ScheduleView(this.schedules.get(0));
 		add(scheduleDisplayScrollPane, "cell 0 2,grow");
@@ -129,23 +130,14 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		optionsPanel.add(saveImageButton, "cell 1 0,alignx right");
 		saveImageButton.addActionListener(this);
 		
-		variantLabel = new JLabel("Variant:");
-		variantLabel.setFont(Fonts.MEDIUM_LABEL);
-		optionsPanel.add(variantLabel, "cell 2 0,alignx right");
-		
-		variantComboBox = new JComboBox<>();
-		variantComboBox.setFont(Fonts.STANDARD_LABEL);
-		variantComboBox.setModel(variantComboBoxModel = new DefaultComboBoxModel<>());
-		optionsPanel.add(variantComboBox, "cell 3 0,growx");
-		variantComboBox.addActionListener(this);
-		
 		menuButton.addActionListener(this);
 		overlayButton.addActionListener(this);
+		trimCheckBox.addActionListener(this);
 		
 		updateLabel();
 	}
 	
-	public void setSchedules(ArrayList<Schedule> schedules) {
+	public void setSchedules(ArrayList<TreeSchedule> schedules) {
 		selectedIndex = 0;
 		this.schedules = schedules; updateLabel();
 	}
@@ -159,22 +151,10 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		prevButton.setEnabled(selectedIndex > 0);
 		nextButton.setEnabled(selectedIndex < schedules.size() - 1);
 		
-		variantComboBoxModel.removeAllElements();
-		for(int i = 0; i < schedules.get(selectedIndex).getVariantCount(); i ++)
-			variantComboBoxModel.addElement(i);
-		
-		variantComboBox.setVisible(variantComboBoxModel.getSize() > 1);
-		variantLabel.setVisible(variantComboBox.isVisible());
-		
 		scheduleDisplayScrollPane.changeSchedule(schedules.get(selectedIndex));
 		actionPerformed(new ActionEvent(overlayButton, 0, ""));
 		
 		updating = false;
-	}
-	
-	private void changeVariant() {
-		if(updating) return;
-		scheduleDisplayScrollPane.changeVariant((Integer) variantComboBox.getSelectedItem()); 
 	}
 	
 	public void actionPerformed(ActionEvent e) {
@@ -198,11 +178,6 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			return;
 		}
 		
-		if(e.getSource() == variantComboBox) {
-			changeVariant();
-			return;
-		}
-		
 		if(e.getSource() == saveImageButton) {
 			scheduleDisplayScrollPane.saveImage();
 			return;
@@ -219,6 +194,12 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			else
 				scheduleDisplayScrollPane.setShadingModel(null);
 			
+			updateLabel();
+			return;
+		}
+		
+		if(e.getSource() == trimCheckBox) {
+			scheduleDisplayScrollPane.shouldTrim(trimCheckBox.isSelected());
 			updateLabel();
 			return;
 		}
@@ -248,7 +229,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			subDiplayPanel.setLayout(new BoxLayout(subDiplayPanel, BoxLayout.X_AXIS));
 			diplayPanel.add(subDiplayPanel);
 			
-			for(Integer classId : schedules.get(selectedIndex).getClassIds((Integer) variantComboBox.getSelectedItem())) {
+			for(Integer classId : schedules.get(selectedIndex).getClassIds()) {
 				JTextField classTextField = new JTextField(classId + " ");
 				classTextField.setEditable(false);
 				classTextField.setFont(Fonts.STANDARD_LABEL);

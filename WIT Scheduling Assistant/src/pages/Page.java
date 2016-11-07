@@ -1,54 +1,156 @@
 package pages;
 
 import java.io.IOException;
-import java.net.URL;
+import java.io.OutputStreamWriter;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
-import com.gargoylesoftware.htmlunit.HttpMethod;
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebRequest;
-import com.gargoylesoftware.htmlunit.html.HtmlForm;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
-import util.Query;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.scene.web.WebEngine;
 
 public abstract class Page {
-	protected static WebClient webClient;
-	public static void setWebClient(WebClient webClient) {
-		Page.webClient = webClient;
+	private static WebEngine webEngine;
+	
+	static {
+		Platform.runLater(() -> {
+			try {
+				webEngine = new WebEngine();
+				
+				SSLContext sc = SSLContext.getInstance("TLSv1"); 
+			    sc.init(null, null, new SecureRandom()); 
+			    HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+			} catch(KeyManagementException | NoSuchAlgorithmException e) {
+				
+			}
+		});
 	}
 	
-	protected HtmlPage page;
-	
-	public Page(String url) throws IOException {
-		if(url == null) return;
-		page = webClient.getPage(url);
+	protected static interface PageLoaded {
+		public void pageLoaded(Document doc);
 	}
 	
-	public Page(WebRequest request) throws IOException {
-		page = webClient.getPage(request);
-	}
-	
-	public Page(HtmlPage page) {
-		this.page = page;
-	}
-	
-	protected HtmlForm formLookup(String action) {
-		return (HtmlForm) page.getByXPath("//form[@action='" + action + "' and @method='post']").get(0);
-	}
-	
-	protected static WebRequest makeRequest(URL url, Query... queries) {
-		WebRequest request = new WebRequest(url, HttpMethod.POST);
+	protected static void addTemperaryDocListner(PageLoaded loaded) {
+		ChangeListener<Document> listener = new ChangeListener<Document>() {
+			public void changed(ObservableValue<? extends Document> o, Document old, Document doc) {
+				if(doc == null) return;
+				
+				webEngine.documentProperty().removeListener(this);
+				if(loaded != null) loaded.pageLoaded(doc);
+		}};
 		
-		String query = "";
-		for(Query q : queries) {
-			query += q + "&";
+		webEngine.documentProperty().addListener(listener);
+	}
+	
+	protected Document document;
+	
+	protected Page(String url, final Object... args) {
+		Platform.runLater(() -> {
+			webEngine.load(url);
+			
+			addTemperaryDocListner(doc -> {
+				Page.this.document = doc;
+				init(args);
+			});
+		});
+		
+		synchronized (this) {
+			try { this.wait(); } catch (InterruptedException e) {}
 		}
-		
-		request.setRequestBody(query.substring(0, query.length() - 1));
-		return request;
 	}
 	
-	protected static Query Q(String key, String value) {
-		return new Query(key, value);
+	protected Page(Document doc, Object... args) {
+//		Platform.runLater(() -> {
+			this.document = doc; 
+			init(args);
+//		});
+	}
+	
+	public void printDocument() {
+		try {
+		    TransformerFactory tf = TransformerFactory.newInstance();
+		    Transformer transformer = tf.newTransformer();
+		    transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "no");
+		    transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+		    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+		    transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+		    transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+	
+		    transformer.transform(new DOMSource(document), 
+		         new StreamResult(new OutputStreamWriter(System.out, "UTF-8")));
+		} catch(IOException | TransformerException e) {}
+	}
+	
+	protected abstract void init(Object[] args);
+	
+	protected synchronized void doneLoading() {
+		this.notify();
+	}
+	
+	protected void submitForm(String formXPath, PageLoaded callBack) {
+		addTemperaryDocListner(callBack);
+		callJavaScript("getElementByXpath(\"" + formXPath + "\").submit()");
+	}
+	
+	protected void setValue(String xPath, String value) {
+		getByXPath(xPath).setAttribute("value", value);
+	}
+	
+	protected void back() {
+		webEngine.getHistory().go(-1);
+	}
+	
+	protected Element getByXPath(String xPath) {
+		return (Element) callJavaScript("getElementByXpath(\"" + xPath + "\");");
+	}
+	
+	protected Object callJavaScript(String call) {
+		return webEngine.executeScript(
+			  "window.$ = function(selector) {"
+			+ "		var selectorType = 'querySelectorAll';"
+		    
+			+ "		if(selector.indexOf('#') === 0) {"
+			+ "			selectorType = 'getElementById';"
+			+ "			selector = selector.substr(1, selector.length);"
+			+ "		}"
+		    
+			+ "		return document[selectorType](selector);"
+			+ "};"
+			
+			+ "function getElementByXpath(path) {"
+			+ "		return document.evaluate(path, document, null, "
+			+ "			XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;"
+			+ "}" 
+			
+			+ call);
 	}
 }
+//window.$ = function(selector) {
+//var selectorType = 'querySelectorAll';
+//
+//if(selector.indexOf('#') === 0) {
+//	selectorType = 'getElementById';
+//	selector = selector.substr(1, selector.length);
+//}
+//
+//return document[selectorType](selector);
+//};
+//
+//function getElementByXpath(path) {
+//return document.evaluate(path, document, null, 
+//	XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+//} 
