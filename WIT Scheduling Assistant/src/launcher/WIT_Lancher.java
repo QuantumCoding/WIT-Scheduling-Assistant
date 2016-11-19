@@ -45,7 +45,7 @@ public class WIT_Lancher {
 		JLabel versionLabel = new JLabel(VERSION);
 		versionLabel.setFont(Fonts.STANDARD_LABEL);
 		Rectangle2D bounds = Fonts.STANDARD_LABEL.getStringBounds(VERSION, new FontRenderContext(null, false, true));
-		versionLabel.setSize((int) bounds.getWidth(), (int) bounds.getHeight());
+		versionLabel.setSize((int) bounds.getWidth() * 100, (int) bounds.getHeight());
 		versionLabel.setLocation(scaledImage.getWidth() - (int) bounds.getWidth(), 
 				scaledImage.getHeight() - (int) bounds.getHeight());
 		
