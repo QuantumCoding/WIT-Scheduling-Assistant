@@ -10,7 +10,7 @@ import org.w3c.dom.NodeList;
 import pages.ClassOption;
 
 public class Section implements ClassAccessor {
-	public static boolean DEBUG_ALLOW_NON_REG_CLASS = true;
+	public static boolean DEBUG_ALLOW_NON_REG_CLASS = false;
 	
 	private ClassOption subject;
 	private String className;

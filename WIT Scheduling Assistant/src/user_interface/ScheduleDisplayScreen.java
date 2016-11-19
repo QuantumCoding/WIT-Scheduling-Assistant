@@ -223,7 +223,7 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			});
 			
 			diplayPanel.add(webLink);
-			diplayPanel.add(Box.createHorizontalStrut(5));
+			diplayPanel.add(Box.createVerticalStrut((int) (5 * Fonts.LENGTH_SCALE)));
 			
 			JPanel subDiplayPanel = new JPanel();
 			subDiplayPanel.setLayout(new BoxLayout(subDiplayPanel, BoxLayout.X_AXIS));
