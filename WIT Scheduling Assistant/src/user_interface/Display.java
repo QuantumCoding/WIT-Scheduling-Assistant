@@ -68,10 +68,8 @@ public class Display extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new CardLayout());
 
-		contentPane.add(menuScreen, "menuScreen");
 		contentPane.add(loginScreen, "loginScreen");
 		contentPane.add(loadingScreen, "loadingScreen");
-		contentPane.add(timeScreen, "timeScreen");
 
 		((CardLayout) contentPane.getLayout()).show(contentPane, "loginScreen");
 		
@@ -150,6 +148,9 @@ public class Display extends JFrame {
 	}
 	
 	public void loginComplete() {
+		contentPane.add(menuScreen, "menuScreen");
+		contentPane.add(timeScreen, "timeScreen");
+		
 		addClassScreen = new AddClassScreen(this);
 		contentPane.add(addClassScreen, "addClassScreen");
 
@@ -157,6 +158,10 @@ public class Display extends JFrame {
 		setLocationRelativeTo(null);
 		
 		switchToMainMenu();
+	}
+	
+	public void loginFailed() {
+		((CardLayout) contentPane.getLayout()).show(contentPane, "loginScreen");
 	}
 	
 	public boolean shouldSave() { return loginScreen.rememberMe(); }

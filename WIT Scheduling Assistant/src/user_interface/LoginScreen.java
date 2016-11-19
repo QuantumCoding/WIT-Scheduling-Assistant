@@ -143,6 +143,7 @@ public class LoginScreen extends JPanel implements ActionListener {
 			if(result == State.Failure) {
 				errorLabel.setVisible(true);
 				passwordInput.setText("");
+				display.loginFailed();
 			
 			} else {
 				errorLabel.setVisible(false);
