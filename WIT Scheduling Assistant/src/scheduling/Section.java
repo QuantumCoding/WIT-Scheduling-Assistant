@@ -70,7 +70,8 @@ public class Section implements ClassAccessor {
 			designations = prevSection.getDesignations();
 			Campus campus = designations.get(0).getLocation().getCampus();
 			designations.addAll(Designation.parse(campus, location, days, time));
-			return;
+
+			throw new IllegalArgumentException("Carry Course; Ending Object Construction");
 		}
 
 		isOpen = !data.get(0).equalsIgnoreCase("C");
@@ -106,7 +107,9 @@ public class Section implements ClassAccessor {
 			
 			prevSection.labs.add(this);
 			prevSection.hasLab = true;
-		} else {
+		} 
+
+		if(!isLab) {
 			labs = new ArrayList<>();
 		}
 		
