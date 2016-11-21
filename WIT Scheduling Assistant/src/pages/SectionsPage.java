@@ -41,10 +41,10 @@ public class SectionsPage extends Page {
 					try {
 						Section section = new Section(prevSection, classGroup, row);
 						
-						if(section.getLabs() != null)
+						if(!section.isLab())
 							prevSection = section;
 						
-						if(section.getLabs() != null || prevSection == null) {
+						if(!section.isLab() || prevSection == null) {
 							if(section.isViable())
 								sections.add(section);
 						}

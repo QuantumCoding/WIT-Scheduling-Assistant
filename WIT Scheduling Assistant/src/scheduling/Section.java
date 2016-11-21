@@ -26,6 +26,7 @@ public class Section implements ClassAccessor {
 	
 	private boolean isLab, hasLab;
 	private boolean isOpen, isViable;
+	private boolean carryCourse, wasLab;
 	
 	private ArrayList<Section> labs;
 	
@@ -57,7 +58,6 @@ public class Section implements ClassAccessor {
 		
 		this.subject = subject;
 		
-		boolean carryCourse = false;
 		String courseNumberStr = data.get(1);
 		try { courseNumber = Integer.parseInt(courseNumberStr); }
 		catch(NumberFormatException e) { carryCourse = true; }
@@ -96,10 +96,14 @@ public class Section implements ClassAccessor {
 		designations = new ArrayList<>();
 		designations.addAll(Designation.parse(campus, location, days, time));
 		
-		isLab = className.toLowerCase().endsWith("lab");
+		isLab = className.toLowerCase().endsWith(" lab") || className.toLowerCase().endsWith("-lab");
 		
+		notLab:
 		if(isLab) {
-			if(prevSection == null) return;
+			if(prevSection == null || prevSection.wasLab || prevSection.carryCourse) {
+				isLab = false; wasLab = true; break notLab;
+			}
+			
 			prevSection.labs.add(this);
 			prevSection.hasLab = true;
 		} else {
