@@ -1,5 +1,6 @@
 package user_interface;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -64,6 +65,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	private HashMap<ClassOption, ArrayList<Boolean>> invalidSectionMarkings;
 	private ClassOption limitingSection;
 	private JButton menuButton;
+	private JCheckBox useSceduleCheckBox;
 
 	public AddClassScreen(Display display) {
 		setBackground(Color.WHITE);
@@ -72,20 +74,31 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		nonInvalidSections = new HashMap<>();
 		invalidSectionMarkings = new HashMap<>();
 		
-		setLayout(new MigLayout("", "[][][][][grow]", "[][][grow][][grow][grow][]"));
+		setLayout(new MigLayout("", "[][][][][grow]", "[][][][grow][][grow][grow][]"));
 		
 		JLabel witIconLabel = new JLabel("");
 		witIconLabel.setIcon(References.Icon_WIT_Header);
-		add(witIconLabel, "cell 0 0 1 3,alignx center,aligny center");
+		add(witIconLabel, "cell 0 0 1 4,alignx center,aligny center");
 		
 		menuButton = new JButton("<HTML><Center>Return<BR>To<BR>Menu</Center></HTML>");
 		menuButton.setFont(Fonts.MENU_BUTTON);
 		menuButton.setBackground(Color.WHITE);
-		add(menuButton, "cell 1 1 1 2,growy");
+		add(menuButton, "cell 1 1 1 3,growy");
+		
+		useSceduleCheckBox = new JCheckBox("Build atop of Current Scedule");
+		useSceduleCheckBox.setBackground(Color.WHITE);
+		useSceduleCheckBox.setFont(Fonts.STANDARD_LABEL);
+		add(useSceduleCheckBox, "cell 4 1,alignx left");
+		
+		JPanel panel = new JPanel();
+		panel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
+		panel.setBackground(Color.WHITE);
+		add(panel, "cell 4 2,grow");
+		panel.setLayout(new BorderLayout(0, 0));
 		
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBackground(Color.WHITE);
-		add(rightPanel, "cell 4 1 1 5,grow");
+		add(rightPanel, "cell 4 3 1 4,grow");
 		rightPanel.setLayout(new MigLayout("insets 0 0 0 0", "[grow,fill]", "[][grow][][grow]"));
 		
 		JPanel limitSectionLabePanel = new JPanel();
@@ -131,7 +144,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel termPanel = new JPanel();
 		termPanel.setBackground(new Color(250,250,250));
 		termPanel.setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		add(termPanel, "cell 0 3 3 1,grow");
+		add(termPanel, "cell 0 4 3 1,grow");
 		termPanel.setLayout(new MigLayout("insets 3px", "[][grow]", "[]"));
 		
 		JLabel termLabel = new JLabel("Select Term: ");
@@ -148,12 +161,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		FlowLayout fl_dividerPanel = (FlowLayout) dividerPanel.getLayout();
 		fl_dividerPanel.setVgap(0);
 		fl_dividerPanel.setHgap(0);
-		add(dividerPanel, "cell 3 0 1 7,grow");
+		add(dividerPanel, "cell 3 0 1 8,grow");
 		
 		JPanel subjectPanel = new JPanel();
 		subjectPanel.setBackground(Color.WHITE);
 		subjectPanel.setBorder(UIManager.getBorder("ScrollPane.border"));
-		add(subjectPanel, "cell 0 4 3 2,grow");
+		add(subjectPanel, "cell 0 5 3 2,grow");
 		subjectPanel.setLayout(new MigLayout("", "[grow]", "[][grow]"));
 		
 		JPanel subjectSelectPanel = new JPanel();
@@ -186,7 +199,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel addPanel = new JPanel();
 		addPanel.setBackground(Color.WHITE);
 		addPanel.setBorder(new LineBorder(new Color(0, 0, 0)));
-		add(addPanel, "cell 0 6 3 1,grow");
+		add(addPanel, "cell 0 7 3 1,grow");
 		addPanel.setLayout(new MigLayout("", "[][grow]", "[]"));
 		
 		addButton = new JButton("Add Class");
@@ -202,7 +215,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		JPanel removePanel = new JPanel();
 		removePanel.setBackground(Color.WHITE);
 		removePanel.setBorder(new LineBorder(new Color(204, 0, 0)));
-		add(removePanel, "cell 4 6,grow");
+		add(removePanel, "cell 4 7,grow");
 		removePanel.setLayout(new MigLayout("", "[grow][grow]", "[]"));
 		
 		removeButton = new JButton("Remove");
@@ -231,6 +244,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 
 		subjectComboBox.addActionListener(this);
 		menuButton.addActionListener(this);
+		useSceduleCheckBox.addActionListener(this);
 		
 		addButton.setEnabled(false);
 		submitButton.setEnabled(false);
@@ -246,6 +260,12 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 	}
 
 	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == useSceduleCheckBox) {
+			int classCount = classesListModel.getSize();
+			submitButton.setEnabled(classCount > 1 || (classCount > 0 && useSceduleCheckBox.isSelected()));
+			return;
+		}
+		
 		if(e.getSource() == menuButton) {
 			display.switchToMainMenu();
 			return;
@@ -325,7 +345,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 			for(int i = 0; i < classesListModel.size(); i ++)
 				classes.add(classesListModel.get(i));
 			
-			display.submitClasses(classes, nonInvalidSections, invalidSectionMarkings);
+			display.submitClasses(classes, nonInvalidSections, invalidSectionMarkings, useSceduleCheckBox.isSelected());
 			return;
 		}
 		

@@ -10,11 +10,13 @@ import java.util.ListIterator;
 
 import pages.ClassOption;
 import pages.DepartmentSelectPage;
+import pages.ViewSchedulePage;
 
 public class Scheduler_Tree {
 	
 	public static enum Stage {
 		Initializing(true, "Initializing"),
+		AccessingSchedule(true, "Gathering all Currently Registered Sections"),
 		CollectingSections(false, "Gathering all viable Sections"),
 		CalculatingConfigs(false, "Calculating possible class configurations"),
 		BuilingTree(false, "Building Tree"),
@@ -44,18 +46,33 @@ public class Scheduler_Tree {
 	private Node root;
 	private int size;
 
-	public Scheduler_Tree(ArrayList<ClassOption> classes) { this(); run(classes, null, null, null); }
+	public Scheduler_Tree(ArrayList<ClassOption> classes) { this(); run(classes, null, false, null, null); }
 	public Scheduler_Tree() { this.stage = Stage.Initializing; }
 
-	public void run(ArrayList<ClassOption> classes, float[][] rankings,
+	public void run(ArrayList<ClassOption> classes, float[][] rankings, boolean useSchedule,
 		HashMap<ClassOption, ArrayList<Section>> preCollectedSections, HashMap<ClassOption, ArrayList<Boolean>> nonViable) {
 	
 		this.current = 0; 
 		this.max = classes.size();
+	
+		allSections = new HashMap<>();
+		
+		if(useSchedule) {
+			this.stage = Stage.AccessingSchedule;
+			visualDelay();
+			
+			TreeSchedule current = ViewSchedulePage.getSchedule();
+			
+			for(ClassConfig section : current.getSections()) {
+				ArrayList<Section> value = new ArrayList<>(); 
+				value.add(section.getSection());
+				allSections.put(section.getClassOption(), value);
+			}
+		}
+
+		this.stage = Stage.CollectingSections;
 		visualDelay();
 		
-		this.stage = Stage.CollectingSections;
-	
 		if(preCollectedSections != null) {
 			for(ClassOption key : preCollectedSections.keySet()) {
 				ListIterator<Section> clean = preCollectedSections.get(key).listIterator();
@@ -72,14 +89,15 @@ public class Scheduler_Tree {
 			}
 		}
 		
-		allSections = new HashMap<>();
-		
 		ArrayList<Section> pre;
 		for(ClassOption option : classes) {
 			allSections.put(option, (pre = preCollectedSections.get(option)) != null ? pre :
-					DepartmentSelectPage.selectClass(option.getTerm(), option.getDepartment(), option).getViableSections()
+					(pre = DepartmentSelectPage.selectClass(option.getTerm(), option.getDepartment(), option).getViableSections())
 				);
-			if(pre == null) this.current ++;
+			
+			if(pre.isEmpty())
+				throw new SchedulingException("No Sections available for " + option);
+			this.current ++;
 		}
 		
 		this.classes = new ArrayList<>(allSections.keySet());
@@ -94,6 +112,8 @@ public class Scheduler_Tree {
 		this.current = 1; this.max = 1; 
 		this.stage = Stage.Done;
 	}
+	
+	public void canceled() { this.stage = Stage.Done; }
 	
 	private void weighSchedules(float[][] rankings) {
 		visualDelay();

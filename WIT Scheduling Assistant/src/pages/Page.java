@@ -17,6 +17,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
@@ -116,6 +117,24 @@ public abstract class Page {
 	
 	protected Element getByXPath(String xPath) {
 		return (Element) callJavaScript("getElementByXpath(\"" + xPath + "\");");
+	}
+	
+	protected String getXPath(Element node) {
+		Element parent = node.getParentNode() instanceof Element ? (Element) node.getParentNode() : null;
+		
+		if(parent == null)
+			return "/" + node.getTagName();
+		
+		NodeList siblings = parent.getChildNodes();
+		for(int i = 0; i < siblings.getLength(); i ++)
+			if(siblings.item(i).isEqualNode(node))
+				return getXPath(parent) + "/node()" + "[" + (i + 1) + "]";
+		
+		throw new IllegalArgumentException("Node is not an Child of its Parent?!");
+	}
+	
+	protected Object getAttribute(Element element, String name) {
+		return callJavaScript("getElementByXpath(\"" + getXPath(element) + "\")." + name);
 	}
 	
 	protected Object callJavaScript(String call) {

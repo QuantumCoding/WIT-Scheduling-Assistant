@@ -135,6 +135,11 @@ public class Section implements ClassAccessor {
 		}
 
 		trimInstructor(this);
+		
+		if(isOpen && data.get(16).toUpperCase().contains("HSS")) {
+			System.out.println(this);
+			System.out.println(data.get(16));
+		}
 	}
 
 	private int getNext(NodeList list, String nodeType, int index) {

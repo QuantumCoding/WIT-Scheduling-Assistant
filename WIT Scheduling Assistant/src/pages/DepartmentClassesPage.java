@@ -102,20 +102,6 @@ public class DepartmentClassesPage extends Page {
 		return -1;
 	}
 	
-	private String getXPath(Element node) {
-	    Element parent = node.getParentNode() instanceof Element ? (Element) node.getParentNode() : null;
-	    
-	    if (parent == null)
-	        return "/" + node.getTagName();
-	    
-	    NodeList siblings = parent.getChildNodes();
-	    for(int i = 0; i < siblings.getLength(); i ++)
-	    	if(siblings.item(i).isEqualNode(node))
-	    		return getXPath(parent) + "/node()" + "[" + (i + 1) + "]";
-	    
-	    throw new IllegalArgumentException("Node is not an Child of its Parent?!");
-	}
-	
 	public ArrayList<ClassOption> getClassList() { return classList; }
 	
 	public SectionsPage selectClass(ClassOption option) {

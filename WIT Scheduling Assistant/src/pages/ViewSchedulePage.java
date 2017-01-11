@@ -22,13 +22,13 @@ public class ViewSchedulePage extends Page {
 	private TreeSchedule schedule;
 	
 	private ViewSchedulePage() {
-		super(References.Schedule_URL);
+		super(References.Schedule_URL + "?start_date_in=01/09/2017");
 	}
 
 	protected void init(Object[] args) {
 		Element table = super.getByXPath("/HTML//TABLE[@class='datadisplaytable']");
 		
-		ArrayList<Element> classLinks = new ArrayList<>();
+		ArrayList<String> classLinks = new ArrayList<>();
 		NodeList tableNodes = table.getChildNodes(); int bodyIndex = -1;
 		while((bodyIndex = getNext(tableNodes, "tBody", bodyIndex)) != -1) {
 			Element body = (Element) tableNodes.item(bodyIndex);
@@ -44,7 +44,7 @@ public class ViewSchedulePage extends Page {
 					NodeList elemNodes = elem.getChildNodes(); int linkIndex = -1;
 					while((linkIndex = getNext(elemNodes, "a", linkIndex)) != -1) {
 						Element link = (Element) elemNodes.item(linkIndex);
-						classLinks.add(link);
+						classLinks.add(super.getAttribute(link, "href").toString());
 					}
 				}
 			}
@@ -52,8 +52,9 @@ public class ViewSchedulePage extends Page {
 		
 		new Thread(() -> {
 			ArrayList<ClassPage> pages = new ArrayList<>();
-			for(Element element : classLinks) {
-				ClassPage classP = new ClassPage(element.getAttribute("href"));
+			for(String element : classLinks) {
+				
+				ClassPage classP = new ClassPage(element);//element.getAttribute("href"));
 				pages.add(classP);
 			}
 			
@@ -124,9 +125,7 @@ public class ViewSchedulePage extends Page {
 		
 		private ArrayList<Section> labs;
 		
-		private ClassPage(String url) {
-			super(References.BaseUrl + url.substring(1));
-		}
+		private ClassPage(String url) { super(url); }
 		
 		protected void init(Object[] args) {
 			data = new String[8];

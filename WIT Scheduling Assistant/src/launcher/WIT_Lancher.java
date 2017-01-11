@@ -19,7 +19,7 @@ import user_interface.Display;
 import util.Fonts;
 
 public class WIT_Lancher {
-	private static final String VERSION = "1.2.2 ";
+	private static final String VERSION = "1.2.4 ";
 	
 	public static void main(String[] args) {
 		BufferedImage loadedImage, scaledImage = new BufferedImage(
@@ -62,5 +62,24 @@ public class WIT_Lancher {
 		
 		new Display();
 		splashScreen.setVisible(false);
+		
+//		try {
+//			System.out.println("Start");
+//			LoginPage.login("cilfonej", "#Cbmuku35");
+//			
+//			Choise term = TermPage.getTerms().get(0);
+//			
+//			for(Choise department :  DepartmentSelectPage.getDepartments(term)) {
+//				System.out.println(department + " -------------------------------------------------------- ");
+//			for(ClassOption clazz : DepartmentSelectPage.selectDepartment(term, department).getClassList()) {
+//			for(Section section : DepartmentSelectPage.selectClass(term, department, clazz).getSections()) {
+//			}}}
+//			
+//			System.out.println("Done");
+//		} catch(Exception e) {
+//			e.printStackTrace();
+//		}
+//		
+//		System.exit(0);
 	}
 }

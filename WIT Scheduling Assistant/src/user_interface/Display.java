@@ -167,7 +167,7 @@ public class Display extends JFrame {
 	public boolean shouldSave() { return loginScreen.rememberMe(); }
 	public Color[][][] getTimeSchadingModel() { return timeScreen.getShadingModel(); }
 	
-	public void submitClasses(ArrayList<ClassOption> classes, HashMap<ClassOption, ArrayList<Section>> preCollectedSections, HashMap<ClassOption, ArrayList<Boolean>> nonValid) {
+	public void submitClasses(ArrayList<ClassOption> classes, HashMap<ClassOption, ArrayList<Section>> preCollectedSections, HashMap<ClassOption, ArrayList<Boolean>> nonValid, boolean useSchedule) {
 		final Scheduler_Tree scheduler = new Scheduler_Tree();
 		
 		new Thread(() -> {
@@ -191,20 +191,20 @@ public class Display extends JFrame {
 		
 		new Thread(() -> {
 			try {
-				scheduler.run(classes, timeScreen.getRankings(), preCollectedSections, nonValid);
+				scheduler.run(classes, timeScreen.getRankings(), useSchedule, preCollectedSections, nonValid);
 				if(scheduler.getSchedules().isEmpty())
 					throw new SchedulingException("No Valid Schedules");
 				
 				displayScreen = new ScheduleDisplayScreen(Display.this, scheduler.getSchedules());
 				contentPane.add(displayScreen, "displayScreen");
-	
+
 				((CardLayout) contentPane.getLayout()).show(contentPane, "displayScreen");
 				
 			} catch(SchedulingException e) {
+				scheduler.canceled();
 				contentPane.add(new ErrorScreen(Display.this, e.getMessage()), "error");
 				((CardLayout) contentPane.getLayout()).show(contentPane, "error");
 			}
-			
 		}, "Tree Scheduling Thread").start();
 	}
 	
