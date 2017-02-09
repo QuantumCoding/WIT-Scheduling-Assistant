@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.image;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -66,9 +66,10 @@ public class ScheduleView extends JScrollPane {
 	public void setShadingModel(Color[][][] shadingModel) {
 		scheduleImage.setShadingModel(shadingModel);
 		scheduleImage.render();
+		repaint();
 	}
 
-	public void changeSchedule(TreeSchedule schedule) {
+	private void updateScales(TreeSchedule schedule) {
 		if(trim) {
 			xMax = yMax = 0;
 			xMin = ScheduleImage.RESOLUTION_XP;
@@ -103,6 +104,10 @@ public class ScheduleView extends JScrollPane {
 		scheduleDisplay.setPreferredSize(displaySize);
 		
 		getVerticalScrollBar().setUnitIncrement(resY / 72);
+	}
+	
+	public void changeSchedule(TreeSchedule schedule) {
+		updateScales(schedule);
 		
 		scheduleImage = new ScheduleImage(schedule);
 		scheduleDisplay.repaint();
@@ -125,10 +130,16 @@ public class ScheduleView extends JScrollPane {
 		if(calcYmax > yMax) yMax = calcYmax;
 	}
 	
-	public void shouldTrim(boolean trim) { this.trim = trim; }
+	public void shouldTrim(boolean trim) { 
+		this.trim = trim; 
+		updateScales(scheduleImage.getSchedule());
+		scheduleImage.render(); 
+		repaint(); 
+	}
+	
 	public boolean isTrimming() { return trim; }
 	
-	public void saveImage() {
-		scheduleImage.save();
-	}
+	public void saveImage() { scheduleImage.save(); }
+	public ImageSettings getSettings() { return scheduleImage.getSettings(); }
+	public void setSettings(ImageSettings settings) { scheduleImage.setSettings(settings); repaint(); }
 }

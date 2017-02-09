@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.screens;
 
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -18,6 +18,7 @@ import javax.swing.border.EtchedBorder;
 import net.miginfocom.swing.MigLayout;
 import pages.ViewSchedulePage;
 import scheduling.TreeSchedule;
+import user_interface.Display;
 import util.Fonts;
 import util.References;
 

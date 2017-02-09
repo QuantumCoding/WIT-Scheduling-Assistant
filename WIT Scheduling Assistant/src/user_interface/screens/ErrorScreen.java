@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.screens;
 
 import java.awt.Color;
 
@@ -9,6 +9,7 @@ import javax.swing.JSeparator;
 import javax.swing.border.EtchedBorder;
 
 import net.miginfocom.swing.MigLayout;
+import user_interface.Display;
 import util.Fonts;
 import util.References;
 

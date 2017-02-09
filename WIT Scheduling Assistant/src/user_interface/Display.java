@@ -29,6 +29,13 @@ import scheduling.SchedulingException;
 import scheduling.Section;
 import scheduling.TreeSchedule;
 import security.SecretKeyUtil;
+import user_interface.screens.AddClassScreen;
+import user_interface.screens.ErrorScreen;
+import user_interface.screens.LoadingScreen;
+import user_interface.screens.LoginScreen;
+import user_interface.screens.MainMenuScreen;
+import user_interface.screens.ScheduleDisplayScreen;
+import user_interface.screens.TimePreferanceScreen;
 import util.References;
 
 public class Display extends JFrame {
@@ -105,6 +112,8 @@ public class Display extends JFrame {
 		
 		addToAll(this, debugToggle);
 	}
+	
+	public float[][] getRankings() { return timeScreen.getRankings(); }
 	
 	private void addToAll(Container container, KeyListener listener) {
 		for(Component comp : container.getComponents()) {

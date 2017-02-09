@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.screens;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -31,6 +31,8 @@ import javax.swing.event.ChangeListener;
 import javax.swing.plaf.basic.BasicSliderUI;
 
 import net.miginfocom.swing.MigLayout;
+import user_interface.Display;
+import user_interface.image.TimePreferanceView;
 import util.Fonts;
 import util.References;
 

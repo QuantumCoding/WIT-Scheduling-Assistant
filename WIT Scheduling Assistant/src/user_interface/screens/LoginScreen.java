@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.screens;
 
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -25,6 +25,7 @@ import net.miginfocom.swing.MigLayout;
 import pages.LoginPage;
 import pages.LoginPage.State;
 import security.SecretKeyUtil;
+import user_interface.Display;
 import util.Fonts;
 import util.References;
 

@@ -30,8 +30,10 @@ public class Section implements ClassAccessor {
 	
 	private ArrayList<Section> labs;
 	
+	public ArrayList<String> data = new ArrayList<>();
+	
 	public Section(Section prevSection, ClassOption subject, Element row) {
-		ArrayList<String> data = new ArrayList<>();
+//		ArrayList<String> data = new ArrayList<>();
 		
 		NodeList rowNodes = row.getChildNodes(); int tableItemIndex = -1;
 		while((tableItemIndex = getNext(rowNodes, "td", tableItemIndex)) != -1) {
@@ -135,11 +137,6 @@ public class Section implements ClassAccessor {
 		}
 
 		trimInstructor(this);
-		
-		if(isOpen && data.get(16).toUpperCase().contains("HSS")) {
-			System.out.println(this);
-			System.out.println(data.get(16));
-		}
 	}
 
 	private int getNext(NodeList list, String nodeType, int index) {

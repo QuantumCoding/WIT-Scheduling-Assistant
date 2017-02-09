@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.screens;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -38,6 +38,7 @@ import pages.ClassOption;
 import pages.DepartmentSelectPage;
 import pages.TermPage;
 import scheduling.Section;
+import user_interface.Display;
 import util.Fonts;
 import util.References;
 
@@ -134,6 +135,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		classesScrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		
 		classesList = new JList<>();
+		classesList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		classesList.setBackground(SystemColor.menu);
 		classesList.setFont(Fonts.STANDARD_LABEL);
 		classesList.setModel(classesListModel = new DefaultListModel<>());
@@ -272,8 +274,7 @@ public class AddClassScreen extends JPanel implements ActionListener, ListSelect
 		}
 		
 		if(e.getSource() == removeButton) {
-			for(int index : classesList.getSelectedIndices())
-				classesListModel.remove(index);
+			classesListModel.removeElementAt(classesList.getSelectedIndex());
 			submitButton.setEnabled(classesListModel.size() > 1);
 			
 			limitSectionsList.removeAll();

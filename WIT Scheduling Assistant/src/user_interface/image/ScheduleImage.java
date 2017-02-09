@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.image;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -133,12 +133,18 @@ public class ScheduleImage extends BufferedImage {
 	private TreeSchedule schedule;
 	private Color[][][] shadingModel;
 	
+	private ImageSettings settings;
+	
 	public ScheduleImage(TreeSchedule schedule) {
 		super(RESOLUTION_X + 3, RESOLUTION_Y + 3, TYPE_INT_ARGB);
 		this.schedule = schedule;
 		
+		if(schedule != null)
+			settings = new ImageSettings(schedule.getColorMap());
 		render();
 	}
+	
+	public TreeSchedule getSchedule() { return schedule; }
 	
 	public void render() {
 		Graphics2D g = createGraphics();
@@ -230,7 +236,7 @@ public class ScheduleImage extends BufferedImage {
 	}
 	
 	private void drawClass(Graphics2D g, ClassConfig config) {
-		Color classColor = schedule.getColorMap().get(config.getSection().getSubject());
+		Color classColor = settings.getClassColors().get(config.getSection().getSubject());
 		
 		for(Designation designation : config.getSection().getDesignations())
 			drawDesignation(g, classColor, config.getSection(), designation);
@@ -255,7 +261,8 @@ public class ScheduleImage extends BufferedImage {
 		height -= 0; width -= 2;
 		
 		g.setColor(color);
-		g.fill3DRect(xShift, yShift, width, height, true);
+		if(settings.using3dRect()) g.fill3DRect(xShift, yShift, width, height, true);
+		else g.fillRect(xShift, yShift, width, height);
 		
 		int midWidth = xShift + width / 2;
 		
@@ -389,8 +396,16 @@ public class ScheduleImage extends BufferedImage {
     	letter = transform.createTransformedShape(letter);
     	
     	g.setStroke(new BasicStroke(1));
-    	g.setColor(Color.WHITE); g.fill(letter);    	
-    	g.setColor(Color.BLACK); g.draw(letter);
+    	
+    	if(settings.getTextColor() != null) {
+    		g.setColor(settings.getTextColor());
+    		g.fill(letter);    	
+    	}
+    	
+    	if(settings.getOutlineColor() != null) {
+    		g.setColor(settings.getOutlineColor()); 
+    		g.draw(letter);
+    	}
 	    
 		g.setStroke(startStroke);
 		
@@ -425,4 +440,7 @@ public class ScheduleImage extends BufferedImage {
 			e.printStackTrace();
 		}
 	}
+	
+	public ImageSettings getSettings() { return settings; }
+	public void setSettings(ImageSettings settings) { this.settings = settings; render(); }
 }

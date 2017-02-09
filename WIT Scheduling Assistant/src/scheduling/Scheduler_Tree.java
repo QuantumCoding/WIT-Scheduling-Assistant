@@ -64,6 +64,7 @@ public class Scheduler_Tree {
 			TreeSchedule current = ViewSchedulePage.getSchedule();
 			
 			for(ClassConfig section : current.getSections()) {
+				System.out.println(section.getSection().getClassName()  + " -> " + section);
 				ArrayList<Section> value = new ArrayList<>(); 
 				value.add(section.getSection());
 				allSections.put(section.getClassOption(), value);
@@ -74,7 +75,7 @@ public class Scheduler_Tree {
 		visualDelay();
 		
 		if(preCollectedSections != null) {
-			for(ClassOption key : preCollectedSections.keySet()) {
+			for(ClassOption key : nonViable.keySet()) {
 				ListIterator<Section> clean = preCollectedSections.get(key).listIterator();
 				ListIterator<Boolean> marks = nonViable.get(key).listIterator();
 	

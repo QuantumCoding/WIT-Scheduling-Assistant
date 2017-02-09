@@ -1,5 +1,8 @@
 package util;
 
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.FontMetrics;
 import java.awt.Graphics;
@@ -56,5 +59,18 @@ public class Fonts {
 		if(testMetrics.getHeight() > targetHeight) fontSize --;
 		
 		return new Font(normal.getFamily(), normal.getStyle(), fontSize);
+	}
+	
+	public static void scale(Component component) {
+		component.setPreferredSize(new Dimension((int) (component.getPreferredSize().getWidth() * LENGTH_SCALE), 
+				(int) (component.getPreferredSize().getHeight() * HEIGHT_SCALE)));
+		
+		Font compFont = component.getFont();
+		component.setFont(new Font(compFont.getName(), compFont.getStyle(), (int) (compFont.getSize() * LENGTH_SCALE)));
+		
+		if(component instanceof Container) {
+			for(Component comp : ((Container) component).getComponents())
+				scale(comp);
+		}
 	}
 }

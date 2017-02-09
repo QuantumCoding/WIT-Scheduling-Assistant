@@ -1,4 +1,4 @@
-package user_interface;
+package user_interface.screens;
 
 import java.awt.Color;
 import java.awt.Desktop;
@@ -24,6 +24,9 @@ import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
 import scheduling.TreeSchedule;
+import user_interface.Display;
+import user_interface.image.ImageSettings;
+import user_interface.image.ScheduleView;
 import util.Fonts;
 import util.References;
 
@@ -36,7 +39,8 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	private JButton prevButton;
 	private JButton nextButton;
 	private JLabel currentScheduleLabel;
-	
+
+	private JButton imageSettingsButton;
 	private JButton saveImageButton;
 	private JButton menuButton;
 	private JCheckBox overlayButton;
@@ -128,11 +132,16 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		saveImageButton.setBackground(Color.WHITE);
 		saveImageButton.setFont(Fonts.STANDARD_LABEL);
 		optionsPanel.add(saveImageButton, "cell 1 0,alignx right");
+		
+		imageSettingsButton = new JButton("Image Settings");
+		optionsPanel.add(imageSettingsButton, "cell 3 0");
+		imageSettingsButton.setFont(Fonts.STANDARD_LABEL);
 		saveImageButton.addActionListener(this);
 		
 		menuButton.addActionListener(this);
 		overlayButton.addActionListener(this);
 		trimCheckBox.addActionListener(this);
+		imageSettingsButton.addActionListener(this);
 		
 		updateLabel();
 	}
@@ -193,14 +202,11 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 				scheduleDisplayScrollPane.setShadingModel(display.getTimeSchadingModel());
 			else
 				scheduleDisplayScrollPane.setShadingModel(null);
-			
-			updateLabel();
 			return;
 		}
 		
 		if(e.getSource() == trimCheckBox) {
 			scheduleDisplayScrollPane.shouldTrim(trimCheckBox.isSelected());
-			updateLabel();
 			return;
 		}
 		
@@ -239,6 +245,12 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 			
 			JOptionPane.showMessageDialog(this, diplayPanel, "Register", JOptionPane.INFORMATION_MESSAGE);
 			
+			return;
+		}
+		
+		if(e.getSource() == imageSettingsButton) {
+			ImageSettings settings = new ImageSettingScreen(scheduleDisplayScrollPane.getSettings()).getSettings();
+			scheduleDisplayScrollPane.setSettings(settings);
 			return;
 		}
 	}

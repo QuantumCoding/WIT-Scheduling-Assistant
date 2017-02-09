@@ -4,7 +4,7 @@ import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
 
-import user_interface.ScheduleImage;
+import user_interface.image.ScheduleImage;
 
 public class Period {
 	private WeekDay day;
