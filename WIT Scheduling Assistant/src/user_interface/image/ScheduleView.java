@@ -16,6 +16,7 @@ import util.Fonts;
 public class ScheduleView extends JScrollPane {
 	private static final long serialVersionUID = 883594012378077662L;
 
+	private ImageSettings imageSettings;
 	private ScheduleImage scheduleImage;
 	private JPanel scheduleDisplay;
 	
@@ -109,7 +110,12 @@ public class ScheduleView extends JScrollPane {
 	public void changeSchedule(TreeSchedule schedule) {
 		updateScales(schedule);
 		
-		scheduleImage = new ScheduleImage(schedule);
+		if(scheduleImage != null)
+			imageSettings = scheduleImage.getSettings();
+		if(imageSettings == null)
+			imageSettings = new ImageSettings(schedule.getColorMap());
+		
+		scheduleImage = new ScheduleImage(schedule, imageSettings);
 		scheduleDisplay.repaint();
 		headerPanel.repaint();
 		labelPanel.repaint();

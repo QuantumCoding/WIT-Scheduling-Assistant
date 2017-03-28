@@ -81,7 +81,7 @@ public class TimePreferanceView extends JScrollPane implements MouseMotionListen
 	}
 
 	public void changeSchedule() {
-		scheduleImage = new ScheduleImage(null);
+		scheduleImage = new ScheduleImage(null, null);
 		scheduleDisplay.repaint();
 	}
 

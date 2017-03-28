@@ -19,7 +19,7 @@ import user_interface.Display;
 import util.Fonts;
 
 public class WIT_Lancher {
-	private static final String VERSION = "1.2.5 ";
+	private static final String VERSION = "1.2.6 ";
 	
 	public static void main(String[] args) {
 		BufferedImage loadedImage, scaledImage = new BufferedImage(

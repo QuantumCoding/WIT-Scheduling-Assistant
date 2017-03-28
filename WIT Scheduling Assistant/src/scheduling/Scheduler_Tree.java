@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.ListIterator;
 
 import pages.ClassOption;
 import pages.DepartmentSelectPage;
@@ -74,25 +73,26 @@ public class Scheduler_Tree {
 		this.stage = Stage.CollectingSections;
 		visualDelay();
 		
+		HashMap<ClassOption, ArrayList<Section>> preColSectionsCopy = new HashMap<>();
 		if(preCollectedSections != null) {
 			for(ClassOption key : nonViable.keySet()) {
-				ListIterator<Section> clean = preCollectedSections.get(key).listIterator();
-				ListIterator<Boolean> marks = nonViable.get(key).listIterator();
-	
-				while(clean.hasNext()) {
-					clean.next();
-					
-					if(!marks.next()) 
-						clean.remove();
-				}
+				ArrayList<Section> sections = preCollectedSections.get(key);
+				ArrayList<Boolean> marks = nonViable.get(key);
 				
+				ArrayList<Section> sec = new ArrayList<>();
+				for(int i = 0; i < sections.size(); i ++) {
+					if(marks.get(i)) sec.add(sections.get(i));
+				}
+
+				if(!sec.isEmpty()) 
+					preColSectionsCopy.put(key, sec);
 				current ++;
 			}
 		}
 		
 		ArrayList<Section> pre;
 		for(ClassOption option : classes) {
-			allSections.put(option, (pre = preCollectedSections.get(option)) != null ? pre :
+			allSections.put(option, (pre = preColSectionsCopy.get(option)) != null ? pre :
 					(pre = DepartmentSelectPage.selectClass(option.getTerm(), option.getDepartment(), option).getViableSections())
 				);
 			

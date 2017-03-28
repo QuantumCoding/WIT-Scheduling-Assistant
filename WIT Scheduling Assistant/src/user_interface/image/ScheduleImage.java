@@ -135,12 +135,11 @@ public class ScheduleImage extends BufferedImage {
 	
 	private ImageSettings settings;
 	
-	public ScheduleImage(TreeSchedule schedule) {
+	public ScheduleImage(TreeSchedule schedule, ImageSettings settings) {
 		super(RESOLUTION_X + 3, RESOLUTION_Y + 3, TYPE_INT_ARGB);
 		this.schedule = schedule;
-		
-		if(schedule != null)
-			settings = new ImageSettings(schedule.getColorMap());
+		this.settings = settings;
+
 		render();
 	}
 	
