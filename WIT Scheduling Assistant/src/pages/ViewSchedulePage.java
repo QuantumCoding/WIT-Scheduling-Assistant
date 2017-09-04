@@ -1,6 +1,9 @@
 package pages;
 
+import java.awt.Color;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -14,15 +17,18 @@ import scheduling.TreeSchedule;
 import util.References;
 
 public class ViewSchedulePage extends Page {
+	public static final String FORMATTER_PATTERN = "MM/dd/yyyy";
+	public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern(FORMATTER_PATTERN);
 	
 	public static TreeSchedule getSchedule() {
-		return new ViewSchedulePage().schedule;
+		try { return new ViewSchedulePage().schedule; }
+		catch(Exception e) { e.printStackTrace(); return new TreeSchedule(new ArrayList<>(), null); }
 	}
 
 	private TreeSchedule schedule;
 	
 	private ViewSchedulePage() {
-		super(References.Schedule_URL + "?start_date_in=01/09/2017");
+		super(References.Schedule_URL + "?goto_date_in=" + References.Selected_Date.format(FORMATTER));
 	}
 
 	protected void init(Object[] args) {
@@ -94,9 +100,13 @@ public class ViewSchedulePage extends Page {
 			for(Section section : sections)
 				configs.addAll(section.calculateConfigurations());
 			
-			schedule = new TreeSchedule(configs, null);
+			schedule = new ViewSchedule(configs, null);
 			super.doneLoading();
 		}, "Acquire Schedule Thread").start();
+	}
+	
+	public static final class ViewSchedule extends TreeSchedule {
+		public ViewSchedule(ArrayList<ClassConfig> sections, HashMap<ClassOption, Color> colorMap) { super(sections, colorMap); }
 	}
 	
 	private int getNext(NodeList list, String nodeType, int index) {

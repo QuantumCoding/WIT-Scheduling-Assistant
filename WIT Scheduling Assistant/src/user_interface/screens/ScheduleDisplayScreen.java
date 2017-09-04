@@ -9,6 +9,7 @@ import java.awt.event.MouseEvent;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -23,6 +24,8 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
+import pages.ViewSchedulePage;
+import pages.ViewSchedulePage.ViewSchedule;
 import scheduling.TreeSchedule;
 import user_interface.Display;
 import user_interface.image.ImageSettings;
@@ -148,7 +151,8 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 	
 	public void setSchedules(ArrayList<TreeSchedule> schedules) {
 		selectedIndex = 0;
-		this.schedules = schedules; updateLabel();
+		this.schedules = schedules; 
+		updateLabel();
 	}
 	
 	private void updateLabel() {
@@ -249,8 +253,19 @@ public class ScheduleDisplayScreen extends JPanel implements ActionListener {
 		}
 		
 		if(e.getSource() == imageSettingsButton) {
+			LocalDate startDate = References.Selected_Date;
 			ImageSettings settings = new ImageSettingScreen(scheduleDisplayScrollPane.getSettings()).getSettings();
 			scheduleDisplayScrollPane.setSettings(settings);
+		
+			if(schedules.get(0) instanceof ViewSchedule && !startDate.equals(References.Selected_Date)) {
+				display.showLoading("Collecting Schedule Information...");
+				new Thread(() -> {
+					ArrayList<TreeSchedule> schedule = new ArrayList<>();
+					schedule.add(ViewSchedulePage.getSchedule());
+					display.showSchedules(schedule);
+				}).start();
+			}
+			
 			return;
 		}
 	}

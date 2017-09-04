@@ -3,6 +3,7 @@ package util;
 import java.awt.Graphics;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
+import java.time.LocalDate;
 
 import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
@@ -33,7 +34,7 @@ public class References {
 
 // ----------------------------------------------- Schedule ----------------------------------------------------------- \\
 	
-	public static final String Schedule_URL = BaseUrl + "SSBPROD/bwskfshd.P_CrseSchd";
+	public static final String Schedule_URL = BaseUrl + "SSBPROD/bwskfshd.p_proc_crse_schd";
 	
 // ----------------------------------------------- Department ----------------------------------------------------------- \\
 		
@@ -52,6 +53,8 @@ public class References {
 	public static final String Sections_Table_Path = "/HTML//TABLE[@class='datadisplaytable']";
 	
 // ----------------------------------------------- General ----------------------------------------------------------- \\
+	
+	public static LocalDate Selected_Date = LocalDate.of(2016, 9, 26);//LocalDate.now();
 	
 	public static String Current_Term = "";
 	public static final String Save_Root = (System.getProperty("os.name").toUpperCase().contains("WIN") ? 

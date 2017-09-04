@@ -114,6 +114,8 @@ public class ScheduleView extends JScrollPane {
 			imageSettings = scheduleImage.getSettings();
 		if(imageSettings == null)
 			imageSettings = new ImageSettings(schedule.getColorMap());
+		else if(!imageSettings.getClassColors().keySet().equals(schedule.getColorMap().keySet()))
+			imageSettings = new ImageSettings(schedule.getColorMap());
 		
 		scheduleImage = new ScheduleImage(schedule, imageSettings);
 		scheduleDisplay.repaint();

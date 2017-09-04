@@ -4,8 +4,12 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.ZoneId;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 
 import javax.swing.Box;
@@ -17,6 +21,8 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.EtchedBorder;
@@ -24,8 +30,10 @@ import javax.swing.border.TitledBorder;
 
 import net.miginfocom.swing.MigLayout;
 import pages.ClassOption;
+import pages.ViewSchedulePage;
 import user_interface.components.ColorOption;
 import user_interface.image.ImageSettings;
+import util.References;
 
 public class ImageSettingScreen extends JDialog implements ActionListener {
 	private static final long serialVersionUID = -9154619536549460392L;
@@ -42,6 +50,7 @@ public class ImageSettingScreen extends JDialog implements ActionListener {
 	
 	private JPanel classColorPanel;
 	private ImageSettings settings;
+	private JSpinner selectedDateSpinner;
 
 	public ImageSettingScreen(ImageSettings settings) {
 		this.settings = settings;
@@ -52,7 +61,7 @@ public class ImageSettingScreen extends JDialog implements ActionListener {
 		
 		getContentPane().setBackground(Color.WHITE);
 		((JComponent) getContentPane()).setBorder(new EtchedBorder(EtchedBorder.RAISED, null, null));
-		getContentPane().setLayout(new MigLayout("", "[grow]", "[][grow][][]"));
+		getContentPane().setLayout(new MigLayout("", "[grow]", "[][grow][grow][][]"));
 		
 		JPanel textPanel = new JPanel();
 		textPanel.setBackground(Color.WHITE);
@@ -116,12 +125,26 @@ public class ImageSettingScreen extends JDialog implements ActionListener {
 		classColorPanel.setBackground(Color.WHITE);
 		sectionScrollPane.setViewportView(classColorPanel);
 		
+		JPanel datePanel = new JPanel();
+		datePanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.RAISED, null, null), "Displayed Week", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		datePanel.setBackground(Color.WHITE);
+		getContentPane().add(datePanel, "cell 0 2,grow");
+		datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.X_AXIS));
+		
+		selectedDateSpinner = new JSpinner();
+		selectedDateSpinner.setModel(new SpinnerDateModel(
+				Date.from(References.Selected_Date.atStartOfDay(ZoneId.systemDefault()).toInstant()), 
+				null, null, Calendar.DAY_OF_YEAR));
+		selectedDateSpinner.setEditor(new JSpinner.DateEditor(selectedDateSpinner, ViewSchedulePage.FORMATTER_PATTERN));
+		selectedDateSpinner.setBackground(SystemColor.menu);
+		datePanel.add(selectedDateSpinner);
+		
 		JSeparator buttonSeparator = new JSeparator();
-		getContentPane().add(buttonSeparator, "cell 0 2,growx");
+		getContentPane().add(buttonSeparator, "cell 0 3,growx");
 		
 		JPanel buttonPanel = new JPanel();
 		buttonPanel.setBackground(Color.WHITE);
-		getContentPane().add(buttonPanel, "cell 0 3,grow");
+		getContentPane().add(buttonPanel, "cell 0 4,grow");
 		buttonPanel.setLayout(new BoxLayout(buttonPanel, BoxLayout.X_AXIS));
 		
 		Component horizontalGlue = Box.createHorizontalGlue();
@@ -177,6 +200,9 @@ public class ImageSettingScreen extends JDialog implements ActionListener {
 			newSettings.setOutlineColor(useOutline.isSelected() ? outlineColor.getColor() : null);
 			
 			newSettings.setUse3dRect(use3dRect.isSelected());
+			
+			References.Selected_Date = ((Date) selectedDateSpinner.getValue()).toInstant()
+					.atZone(ZoneId.systemDefault()).toLocalDate();
 			
 			settings = newSettings;
 			setVisible(false);
