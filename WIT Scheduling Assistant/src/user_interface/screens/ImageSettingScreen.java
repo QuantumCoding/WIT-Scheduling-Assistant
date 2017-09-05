@@ -25,6 +25,8 @@ import javax.swing.JSpinner;
 import javax.swing.SpinnerDateModel;
 import javax.swing.SwingConstants;
 import javax.swing.border.BevelBorder;
+import javax.swing.border.CompoundBorder;
+import javax.swing.border.EmptyBorder;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
 
@@ -126,7 +128,7 @@ public class ImageSettingScreen extends JDialog implements ActionListener {
 		sectionScrollPane.setViewportView(classColorPanel);
 		
 		JPanel datePanel = new JPanel();
-		datePanel.setBorder(new TitledBorder(new EtchedBorder(EtchedBorder.RAISED, null, null), "Displayed Week", TitledBorder.LEADING, TitledBorder.TOP, null, null));
+		datePanel.setBorder(new CompoundBorder(new TitledBorder(new EtchedBorder(EtchedBorder.RAISED, null, null), "Displayed Week", TitledBorder.LEADING, TitledBorder.TOP, null, null), new EmptyBorder(3, 3, 3, 3)));
 		datePanel.setBackground(Color.WHITE);
 		getContentPane().add(datePanel, "cell 0 2,grow");
 		datePanel.setLayout(new BoxLayout(datePanel, BoxLayout.X_AXIS));
@@ -159,9 +161,10 @@ public class ImageSettingScreen extends JDialog implements ActionListener {
 		buttonPanel.add(cancleButton);
 		
 		classColorPanel.setLayout(new BoxLayout(classColorPanel, BoxLayout.Y_AXIS));
-		for(ClassOption clazz: settings.getClassColors().keySet()) {
+		for(ClassOption clazz : settings.getClassColors().keySet()) {
 			ColorOption option = new ColorOption(clazz.getName());
 			option.setColor(settings.getClassColors().get(clazz));
+			option.setBorder(new EmptyBorder(0, 3, 0, 0));
 			option.setBackground(Color.WHITE);
 			classColorPanel.add(option);
 		}

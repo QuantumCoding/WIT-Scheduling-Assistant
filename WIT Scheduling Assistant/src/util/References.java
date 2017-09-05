@@ -54,7 +54,7 @@ public class References {
 	
 // ----------------------------------------------- General ----------------------------------------------------------- \\
 	
-	public static LocalDate Selected_Date = LocalDate.of(2016, 9, 26);//LocalDate.now();
+	public static LocalDate Selected_Date = LocalDate.now();
 	
 	public static String Current_Term = "";
 	public static final String Save_Root = (System.getProperty("os.name").toUpperCase().contains("WIN") ? 
