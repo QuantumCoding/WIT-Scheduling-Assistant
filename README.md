@@ -1,4 +1,4 @@
-## Welcome to the WIT Scheduling Assistant Info/Release Page
+## Welcome to the WIT Scheduling Assistant 
 
 This page contains basic information about the application, along with a link to the latest version. I hope this application can be of use to some of you, best of luck scheduling. 
 
@@ -8,7 +8,6 @@ If you find a bug, I would be happy to help fix it. Please report any problems [
 
 ### Download
 
-```
-Current Version: [V1.2.7]()
+Current Version: __V1.2.7__ [[current]()]
 
-```
+[[V1.2.7]()]
