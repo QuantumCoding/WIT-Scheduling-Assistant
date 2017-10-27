@@ -8,6 +8,6 @@ If you find a bug, I would be happy to help fix it. Please report any problems [
 
 ### Download
 
-Current Version: __V1.2.7__ [[current]()]
+Current Version: __V1.2.7__ [[current](TestC)]
 
-[[V1.2.7]()]
+[[V1.2.7](Text2)]
