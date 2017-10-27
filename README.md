@@ -10,4 +10,4 @@ If you find a bug, I would be happy to help fix it. Please report any problems [
 
 Current Version: __V1.2.7__ [[current](TestC)]
 
-[[V1.2.7](Text2)]
+[[V1.2.6](https://github.com/QuantumCoding/WIT-Scheduling-Assistant/releases/download/V1.2.6/WIT.Scheduling.Assistant.exe)]
