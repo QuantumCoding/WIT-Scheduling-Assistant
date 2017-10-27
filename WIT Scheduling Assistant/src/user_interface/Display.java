@@ -82,7 +82,7 @@ public class Display extends JFrame {
 		
 		pack();
 		setLocationRelativeTo(null);
-		setVisible(true);
+//		setVisible(true);
 		
 		KeyListener debugToggle = new KeyAdapter() {
 			private boolean shift, control, trigger;

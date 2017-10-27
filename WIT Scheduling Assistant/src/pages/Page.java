@@ -137,6 +137,16 @@ public abstract class Page {
 		return callJavaScript("getElementByXpath(\"" + getXPath(element) + "\")." + name);
 	}
 	
+	protected Object getAttribute(String xPath, String name) {
+		return callJavaScript(
+			"function pageAttbLookup() { "
+				+ "var v = getElementByXpath(\"" + xPath + "\"); "
+				+ "if(v) return v." + name + "; else return null;"
+			+ "}"
+
+			+ "pageAttbLookup();");
+	}
+	
 	protected Object callJavaScript(String call) {
 		return webEngine.executeScript(
 			  "window.$ = function(selector) {"
