@@ -8,6 +8,6 @@ If you find a bug, I would be happy to help fix it. Please report any problems [
 
 ### Download
 
-Current Version: __V1.2.7__ [[current](TestC)]
+Current Version: __V1.2.7__ [[current](https://github.com/QuantumCoding/WIT-Scheduling-Assistant/releases/download/V1.2.6/WIT.Scheduling.Assistant.exe)]
 
 [[V1.2.6](https://github.com/QuantumCoding/WIT-Scheduling-Assistant/releases/download/V1.2.6/WIT.Scheduling.Assistant.exe)]
